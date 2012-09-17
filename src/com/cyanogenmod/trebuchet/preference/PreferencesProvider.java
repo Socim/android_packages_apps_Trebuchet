@@ -17,16 +17,17 @@
 package com.cyanogenmod.trebuchet.preference;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.SharedPreferences;
+import android.util.DisplayMetrics;
 
 import com.cyanogenmod.trebuchet.LauncherApplication;
-import com.cyanogenmod.trebuchet.Workspace;
-import com.cyanogenmod.trebuchet.AppsCustomizePagedView;
 
 public final class PreferencesProvider {
     public static final String PREFERENCES_KEY = "com.cyanogenmod.trebuchet_preferences";
 
     public static final String PREFERENCES_CHANGED = "preferences_changed";
+
     public static class Interface {
         public static class Homescreen {
             public static int getNumberHomescreens(Context context) {
@@ -71,16 +72,24 @@ public final class PreferencesProvider {
             }
             public static boolean getResizeAnyWidget(Context context) {
                 final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
-                return preferences.getBoolean("ui_homescreen_general_resize_any_widget", false);
+                return preferences.getBoolean("ui_homescreen_general_resize_any_widget", true);
             }
             public static boolean getHideIconLabels(Context context) {
                 final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                 return preferences.getBoolean("ui_homescreen_general_hide_icon_labels", false);
             }
+            public static boolean getShowSearchBackground(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getBoolean("ui_search_background", true);
+            }
             public static class Scrolling {
                 public static boolean getScrollWallpaper(Context context) {
                     final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                     return preferences.getBoolean("ui_homescreen_scrolling_scroll_wallpaper", true);
+                }
+                public static boolean getFadeInAdjacentScreens(Context context, boolean def) {
+                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return preferences.getBoolean("ui_homescreen_scrolling_fade_adjacent_screens", def);
                 }
             }
             public static class Indicator {
@@ -104,6 +113,36 @@ public final class PreferencesProvider {
                 final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
                 return preferences.getBoolean("ui_drawer_widgets_join_apps", true);
             }
+            public static boolean getShowMarketButton(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getBoolean("ui_drawer_market_button", true);
+            }
+            public static boolean getShowMenuButton(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getBoolean("ui_drawer_menu_button", true);
+            }
+            public static boolean getOpenWithHome(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getBoolean("ui_drawer_launch_home", false);
+            }
+            public static boolean getStayOnPage(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getBoolean("ui_drawer_launch_home_page", false);
+            }
+            public static boolean getOpenWithBack(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getBoolean("ui_drawer_launch_back", false);
+            }
+            public static boolean getDismissDrawerOnTap(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getBoolean("ui_drawer_dismiss_on_tap", true);
+            }
+            public static class Scrolling {
+                public static boolean getFadeInAdjacentScreens(Context context) {
+                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return preferences.getBoolean("ui_drawer_scrolling_fade_adjacent_screens", false);
+                }
+            }
             public static class Indicator {
                 public static boolean getShowScrollingIndicator(Context context) {
                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
@@ -114,14 +153,76 @@ public final class PreferencesProvider {
                     return preferences.getBoolean("ui_drawer_indicator_fade", true);
                 }
             }
+            public static class Background {
+                public static boolean getBackgroundShowWallpaper(Context context) {
+                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return preferences.getBoolean("ui_drawer_background_show_wallpaper", false);
+                }
+            }
+            public static class TopBar {
+                public static boolean getHideTopbar(Context context) {
+                    final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                    return preferences.getBoolean("ui_drawer_hide_topbar", false);
+                }
+            }
         }
 
         public static class Dock {
-
+            public static boolean getShowHotseat(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getBoolean("ui_homescreen_general_show_hotseat",
+						LauncherApplication.isScreenLarge() ? false : true);
+            }
+            public static int getHotseatApps(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getInt("ui_hotseat_apps", 7);
+            }
+            public static boolean getShowAllAppsHotseat(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getBoolean("ui_homescreen_general_show_hotseat_allapps", true);
+            }
+            public static int getHotseatAllAppsPosition(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getInt("ui_hotseat_all_apps", 0);
+            }
+            public static boolean getShowBackground(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getBoolean("ui_hotseat_background", true);
+            }
+            public static boolean getShowAppsButton(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return preferences.getBoolean("ui_show_apps_button", true);
+            }
+            public static int getAppsButtonPosition(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return Integer.parseInt(preferences.getString("ui_apps_button_position", "1"));
+            }
         }
 
         public static class Icons {
+        }
 
+        public static class Gestures {
+            public static int getHomescreenDoubleTap(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return Integer.parseInt(preferences.getString("ui_homescreen_doubletap", "0"));
+            }
+            public static int getHomescreenSwipeUp(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return Integer.parseInt(preferences.getString("ui_homescreen_swipe_up", "0"));
+            }
+            public static int getHomescreenSwipeDown(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return Integer.parseInt(preferences.getString("ui_homescreen_swipe_down", "0"));
+            }
+            public static int getDrawerSwipeUp(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return Integer.parseInt(preferences.getString("ui_drawer_swipe_up", "0"));
+            }
+            public static int getDrawerSwipeDown(Context context) {
+                final SharedPreferences preferences = context.getSharedPreferences(PREFERENCES_KEY, 0);
+                return Integer.parseInt(preferences.getString("ui_drawer_swipe_down", "0"));
+            }
         }
 
         public static class General {

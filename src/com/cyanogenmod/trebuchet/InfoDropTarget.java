@@ -56,9 +56,7 @@ public class InfoDropTarget extends ButtonDropTarget {
         // Remove the text in the Phone UI in landscape
         int orientation = getResources().getConfiguration().orientation;
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            if (!LauncherApplication.isScreenLarge()) {
-                setText("");
-            }
+            setText("");
         }
     }
 

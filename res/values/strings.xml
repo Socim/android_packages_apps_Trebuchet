@@ -49,6 +49,8 @@
     <!-- Market button text.  The market button text is removed in Launcher.java 
          in the Phone UI. [CHAR LIMIT=32] -->
     <string name="market">Shop</string>
+    <!-- Menu button text. -->
+    <string name="menu">Menu</string>
     <!-- The format string for the dimensions of a widget in the drawer -->
     <string name="widget_dims_format" translatable="false">%1$d x %2$d</string>
 
@@ -209,7 +211,7 @@ s -->
         shortcuts in Home.</string>
 
     <!-- Widgets: -->
-    <skip />    
+    <skip />
 
     <!-- Text to show user in place of a gadget when we can't display it properly -->
     <string name="gadget_error_text">Problem loading widget</string>
@@ -322,34 +324,88 @@ s -->
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Hide icon labels</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Hide homescreen icon labels</string>
     <string name="preferences_interface_homescreen_scrolling_category">Scrolling</string>
-    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Scroll Wallpaper</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Transition effect</string>
+    <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Scrolling effect when scrolling homescreens</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_title">Fade side pages</string>
+    <string name="preferences_interface_homescreen_scrolling_fade_adjacent_screens_summary">Fade the side pages when scrolling homescreens</string>
+    <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_title">Scroll wallpaper</string>
     <string name="preferences_interface_homescreen_scrolling_scroll_wallpaper_summary">Scroll wallpaper when scrolling homescreens</string>
     <string name="preferences_interface_homescreen_indicator_category">Indicator</string>
     <string name="preferences_interface_homescreen_indicator_enable_title">Show page indicator</string>
     <string name="preferences_interface_homescreen_indicator_enable_summary">Show current page indicator at the bottom of the screen</string>
     <string name="preferences_interface_homescreen_indicator_fade_title">Fade indicator</string>
     <string name="preferences_interface_homescreen_indicator_fade_summary">Fade the indicator after the homescreen has changed</string>
-    <string name="preferences_interface_homescreen_indicator_background_title">Show dock divider</string>
-    <string name="preferences_interface_homescreen_indicator_background_summary">Show the background behind the indicator</string>
+    <string name="preferences_interface_homescreen_indicator_background_title">Dock divider</string>
+    <string name="preferences_interface_homescreen_indicator_background_summary">Show the dock divider for the bottom/right dock</string>
+    <string name="preferences_interface_homescreen_general_hotseat_apps">Dock app spaces</string>
+    <string name="preferences_interface_homescreen_general_show_hotseat_title">Dock</string>
+    <string name="preferences_interface_homescreen_general_show_hotseat_allapps_title">All apps button in dock</string>
+    <string name="preferences_interface_homescreen_search_background_title">Search bar divider</string>
+    <string name="preferences_interface_homescreen_general_hotseat_all_apps">All apps button position in dock</string>
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_title">Drawer</string>
     <string name="preferences_interface_drawer_widgets_category">Widgets</string>
     <string name="preferences_interface_drawer_widgets_join_apps_title">Join with apps</string>
     <string name="preferences_interface_drawer_widgets_join_apps_summary">Swipe from apps drawer to widgets drawer without changing tabs</string>
+    <string name="preferences_interface_drawer_tab_category">Tab bar</string>
+    <string name="preferences_interface_drawer_scrolling_category">Scrolling</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_title">Transition effect</string>
+    <string name="preferences_interface_drawer_scrolling_transition_effect_summary">Scrolling effect when scrolling screens</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_title">Fade side pages</string>
+    <string name="preferences_interface_drawer_scrolling_fade_adjacent_screens_summary">Fade the side pages when scrolling screens</string>
     <string name="preferences_interface_drawer_indicator_category">Indicator</string>
     <string name="preferences_interface_drawer_indicator_enable_title">Show page indicator</string>
     <string name="preferences_interface_drawer_indicator_enable_summary">Show current page indicator at the bottom of the screen</string>
     <string name="preferences_interface_drawer_indicator_fade_title">Fade indicator</string>
     <string name="preferences_interface_drawer_indicator_fade_summary">Fade the indicator after the page has changed</string>
+    <string name="preferences_interface_drawer_background_category">Drawer Background</string>
+    <string name="preferences_interface_drawer_background_show_wallpaper_title">Transparent background</string>
+    <string name="preferences_interface_drawer_topbar_hide_topbar_title">Hide tab bar</string>
+    <string name="preferences_interface_drawer_menu_button_title">Menu button</string>
+    <string name="preferences_interface_drawer_market_button_title">Market button</string>
+    <string name="preferences_interface_drawer_launch_category">Open and close</string>
+    <string name="preferences_interface_drawer_launch_back_title">Open with back button</string>
+    <string name="preferences_interface_drawer_launch_home_title">Open with home button</string>
+    <string name="preferences_interface_drawer_launch_home_page_title">Stay on same page</string>
+    <string name="preferences_interface_drawer_dismiss_on_tap_title">Close on unhandled tap</string>
 
     <!-- Dock -->
     <string name="preferences_interface_dock_title">Dock</string>
+    <string name="preferences_interface_dock_apps_button_title">All apps button</string>
+    <string name="preferences_interface_dock_apps_button_position_title">Tablet drawer button position</string>
 
     <!-- Icons -->
     <string name="preferences_interface_icons_title">Icons</string>
 
+    <!-- Gestures -->
+    <string name="preferences_interface_gestures_title">Gestures</string>
+    <string name="preferences_interface_gestures_homescreen_category">Homescreen gestures</string>
+    <string name="preferences_interface_gestures_double_tap_title">Double tap</string>
+    <string name="preferences_interface_gestures_swipe_up_title">Swipe up</string>
+    <string name="preferences_interface_gestures_swipe_down_title">Swipe down</string>
+    <string name="preferences_interface_gestures_no_action">No action</string>
+    <string name="preferences_interface_gestures_open_drawer">Open drawer</string>
+    <string name="preferences_interface_gestures_expand_status_bar">Expand status bar notifications</string>
+    <string name="preferences_interface_gestures_preferences">Launch Trebuchet Settings</string>
+    <string name="preferences_interface_gestures_launch_application">Launch activity</string>
+    <string name="preferences_interface_gestures_rocket_launcher">Rocket Launcher</string>
+
     <!-- General -->
     <string name="preferences_interface_general_title">General</string>
     <string name="preferences_interface_general_orientation_title">Auto-rotate screen</string>
+
+    <string name="preferences_auto_number_picker">Automatic</string>
+
+    <string name="menu_app_drawer">App drawer</string>
+
+    <string name="position_bottom_right">Bottom right</string>
+    <string name="position_bottom_left">Bottom left</string>
+    <string name="position_top_left">Top left</string>
+    <string name="position_top_right">Top right</string>
+    <string name="position_center">Centered on bottom in portrait and right in landscape</string>
+    <string name="position_center_left">Centered on bottom in portrait and left in landscape</string>
+    <string name="position_center_top">Centered on top in portrait and left in landscape</string>
+    <string name="position_center_top_right">Centered on top in portrait and right in landscape</string>
+
 </resources>

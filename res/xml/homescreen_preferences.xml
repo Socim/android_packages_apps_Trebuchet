@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet">
+
+            <PreferenceCategory android:title="@string/preferences_interface_homescreen_general_category"
+                android:key="ui_homescreen_general">
+                <CheckBoxPreference android:key="ui_general_orientation"
+                    android:title="@string/preferences_interface_general_orientation_title"
+                    android:defaultValue="true" />
+                <CheckBoxPreference android:key="ui_homescreen_general_resize_any_widget"
+                    android:title="@string/preferences_interface_homescreen_general_resize_any_widget_title"
+                    android:defaultValue="true" />
+                <CheckBoxPreference android:key="ui_homescreen_general_search"
+                    android:title="@string/preferences_interface_homescreen_general_search_title"
+                    android:defaultValue="true" />
+                <CheckBoxPreference android:key="ui_search_background"
+                    android:title="@string/preferences_interface_homescreen_search_background_title"
+                    android:dependency="ui_homescreen_general_search"
+                    android:defaultValue="true" />
+                <CheckBoxPreference android:key="ui_show_apps_button"
+                    android:title="@string/preferences_interface_dock_apps_button_title"
+                    android:dependency="ui_homescreen_general_search"
+                    android:defaultValue="true" />
+                <com.cyanogenmod.trebuchet.preference.NumberPickerPreference android:key="ui_homescreen_screens"
+                    android:title="@string/preferences_interface_homescreen_general_screens_title"
+                    android:summary="@string/preferences_interface_homescreen_general_screens_summary"
+                    android:defaultValue="5"
+                    launcher:max="9"
+                    launcher:min="1" />
+                <com.cyanogenmod.trebuchet.preference.NumberPickerPreference android:key="ui_homescreen_default_screen"
+                    android:title="@string/preferences_interface_homescreen_general_default_screen_title"
+                    android:summary="@string/preferences_interface_homescreen_general_default_screen_summary"
+                    android:defaultValue="3"
+                    launcher:maxExternal="ui_homescreen_screens"
+                    launcher:max="9"
+                    launcher:min="1" />
+                <com.cyanogenmod.trebuchet.preference.AutoDoubleNumberPickerPreference android:key="ui_homescreen_grid"
+                    android:title="@string/preferences_interface_homescreen_general_grid_title"
+                    android:summary="@string/preferences_interface_homescreen_general_grid_summary"
+                    launcher:pickerTitle1="@string/preferences_interface_homescreen_general_grid_rows_title"
+                    launcher:pickerTitle2="@string/preferences_interface_homescreen_general_grid_columns_title"
+                    launcher:defaultValue1="6"
+                    launcher:defaultValue2="6"
+                    launcher:max1="10"
+                    launcher:min1="1"
+                    launcher:max2="10"
+                    launcher:min2="1" />
+                <CheckBoxPreference android:key="ui_homescreen_general_hide_icon_labels"
+                    android:title="@string/preferences_interface_homescreen_general_hide_icon_labels_summary" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_interface_homescreen_scrolling_category">
+                <CheckBoxPreference android:key="ui_homescreen_scrolling_scroll_wallpaper"
+                    android:title="@string/preferences_interface_homescreen_scrolling_scroll_wallpaper_title"
+                    android:defaultValue="true" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_interface_homescreen_indicator_category">
+                <CheckBoxPreference android:key="ui_homescreen_indicator_enable"
+                    android:title="@string/preferences_interface_homescreen_indicator_enable_title"
+                    android:defaultValue="true" />
+                <CheckBoxPreference android:key="ui_homescreen_indicator_fade"
+                    android:title="@string/preferences_interface_homescreen_indicator_fade_title"
+                    android:defaultValue="true"
+                    android:dependency="ui_homescreen_indicator_enable" />
+            </PreferenceCategory>
+</PreferenceScreen>

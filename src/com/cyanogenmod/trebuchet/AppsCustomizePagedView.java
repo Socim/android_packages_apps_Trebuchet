@@ -411,7 +411,7 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
 
     @Override
     protected void onUnhandledTap(MotionEvent ev) {
-        if (LauncherApplication.isScreenLarge()) {
+        if (PreferencesProvider.Interface.Drawer.getDismissDrawerOnTap(getContext())) {
             // Dismiss AppsCustomize if we tap
             mLauncher.showWorkspace(true);
         }
@@ -522,12 +522,6 @@ public class AppsCustomizePagedView extends PagedViewWithDraggableItems implemen
             Configuration.ORIENTATION_LANDSCAPE;
         int maxCellCountX = Integer.MAX_VALUE;
         int maxCellCountY = Integer.MAX_VALUE;
-        if (LauncherApplication.isScreenLarge()) {
-            maxCellCountX = (isLandscape ? LauncherModel.getCellCountX() :
-                LauncherModel.getCellCountY());
-            maxCellCountY = (isLandscape ? LauncherModel.getCellCountY() :
-                LauncherModel.getCellCountX());
-        }
         if (mMaxAppCellCountX > -1) {
             maxCellCountX = Math.min(maxCellCountX, mMaxAppCellCountX);
         }

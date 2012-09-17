@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet">
+            <PreferenceCategory android:title="@string/preferences_interface_drawer_widgets_category">
+                <CheckBoxPreference android:key="ui_drawer_widgets_join_apps"
+                    android:title="@string/preferences_interface_drawer_widgets_join_apps_title"
+                    android:defaultValue="true" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_interface_drawer_background_category">
+                <CheckBoxPreference android:key="ui_drawer_background_show_wallpaper"
+                    android:title="@string/preferences_interface_drawer_background_show_wallpaper_title"
+                    android:defaultValue="false" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_interface_drawer_launch_category">
+                <CheckBoxPreference android:key="ui_drawer_launch_home"
+                    android:title="@string/preferences_interface_drawer_launch_home_title"
+                    android:defaultValue="false" />
+                <CheckBoxPreference android:key="ui_drawer_launch_home_page"
+                    android:title="@string/preferences_interface_drawer_launch_home_page_title"
+                    android:dependency="ui_drawer_launch_home"
+                    android:defaultValue="false" />
+                <CheckBoxPreference android:key="ui_drawer_launch_back"
+                    android:title="@string/preferences_interface_drawer_launch_back_title"
+                    android:defaultValue="false" />
+                <CheckBoxPreference android:key="ui_drawer_dismiss_on_tap"
+                    android:title="@string/preferences_interface_drawer_dismiss_on_tap_title"
+                    android:defaultValue="true" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_interface_drawer_tab_category">
+                <CheckBoxPreference android:key="ui_drawer_hide_topbar"
+                    android:title="@string/preferences_interface_drawer_topbar_hide_topbar_title"
+                    android:disableDependentsState="true"
+                    android:defaultValue="false" />
+                <CheckBoxPreference android:key="ui_drawer_market_button"
+                    android:title="@string/preferences_interface_drawer_market_button_title"
+                    android:dependency="ui_drawer_hide_topbar"
+                    android:defaultValue="true" />
+                <CheckBoxPreference android:key="ui_drawer_menu_button"
+                    android:title="@string/preferences_interface_drawer_menu_button_title"
+                    android:dependency="ui_drawer_hide_topbar"
+                    android:defaultValue="true" />
+            </PreferenceCategory>
+            <PreferenceCategory android:title="@string/preferences_interface_drawer_indicator_category">
+                <CheckBoxPreference android:key="ui_drawer_indicator_enable"
+                    android:title="@string/preferences_interface_drawer_indicator_enable_title"
+                    android:defaultValue="true" />
+                <CheckBoxPreference android:key="ui_drawer_indicator_fade"
+                    android:title="@string/preferences_interface_drawer_indicator_fade_title"
+                    android:defaultValue="true"
+                    android:dependency="ui_drawer_indicator_enable" />
+            </PreferenceCategory>
+</PreferenceScreen>

@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.FrameLayout;
 
+import com.cyanogenmod.trebuchet.LauncherApplication;
 import com.cyanogenmod.trebuchet.R;
 import com.cyanogenmod.trebuchet.preference.PreferencesProvider;
 
@@ -110,8 +111,8 @@ public class SearchDropTargetBar extends FrameLayout implements DragController.D
         mInfoDropTarget.setSearchDropTargetBar(this);
         mDeleteDropTarget.setSearchDropTargetBar(this);
 
-        mEnableDropDownDropTargets =
-            getResources().getBoolean(R.bool.config_useDropTargetDownTransition);
+        mEnableDropDownDropTargets = !LauncherApplication.isScreenLandscape(getContext());
+            //getResources().getBoolean(R.bool.config_useDropTargetDownTransition);
 
         if (!mShowQSBSearchBar) {
             mQSBSearchBar.setVisibility(View.GONE);

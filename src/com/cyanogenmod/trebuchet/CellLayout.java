@@ -49,6 +49,7 @@ import android.view.animation.LayoutAnimationController;
 
 import com.cyanogenmod.trebuchet.R;
 import com.cyanogenmod.trebuchet.FolderIcon.FolderRingAnimator;
+import com.cyanogenmod.trebuchet.preference.PreferencesProvider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,6 +62,8 @@ public class CellLayout extends ViewGroup {
     private Launcher mLauncher;
     private int mCellWidth;
     private int mCellHeight;
+    private int mOriginalCellWidth;
+    private int mOriginalCellHeight;
 
     private int mCountX;
     private int mCountY;
@@ -179,14 +182,17 @@ public class CellLayout extends ViewGroup {
         mLauncher = (Launcher) context;
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CellLayout, defStyle, 0);
-
-        mCellWidth = a.getDimensionPixelSize(R.styleable.CellLayout_cellWidth, 10);
-        mCellHeight = a.getDimensionPixelSize(R.styleable.CellLayout_cellHeight, 10);
+        mCountX = LauncherModel.getCellCountX();
+        mCountY = LauncherModel.getCellCountY();
+        mCellWidth = mOriginalCellWidth =
+                a.getDimensionPixelSize(R.styleable.CellLayout_cellWidth, 10);
+        mCellHeight = mOriginalCellHeight =
+                a.getDimensionPixelSize(R.styleable.CellLayout_cellHeight, 10);
+        mCellWidth = getMaxCellWidth(!LauncherApplication.isScreenLandscape(context));
+        mCellHeight = getMaxCellHeight(!LauncherApplication.isScreenLandscape(context));
         mWidthGap = mOriginalWidthGap = a.getDimensionPixelSize(R.styleable.CellLayout_widthGap, 0);
         mHeightGap = mOriginalHeightGap = a.getDimensionPixelSize(R.styleable.CellLayout_heightGap, 0);
         mMaxGap = a.getDimensionPixelSize(R.styleable.CellLayout_maxGap, 0);
-        mCountX = LauncherModel.getCellCountX();
-        mCountY = LauncherModel.getCellCountY();
         mOccupied = new boolean[mCountX][mCountY];
         mTmpOccupied = new boolean[mCountX][mCountY];
         mPreviousReorderDirection[0] = INVALID_DIRECTION;
@@ -276,6 +282,7 @@ public class CellLayout extends ViewGroup {
         mForegroundRect = new Rect();
 
         mShortcutsAndWidgets = new ShortcutAndWidgetContainer(context);
+        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
         addView(mShortcutsAndWidgets);
     }
 
@@ -557,6 +564,10 @@ public class CellLayout extends ViewGroup {
 
     public void setIsHotseat(boolean isHotseat) {
         mIsHotseat = isHotseat;
+        if (isHotseat) {
+            mCellWidth = mOriginalCellWidth;
+            mCellHeight = mOriginalCellHeight;
+        }
     }
 
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
@@ -916,6 +927,25 @@ public class CellLayout extends ViewGroup {
         metrics.set(cellWidth, cellHeight, widthGap, heightGap);
     }
 
+    private int getMaxCellWidth(boolean portrait) {
+        int width = (int) (getResources().getConfiguration().screenWidthDp * LauncherApplication.getScreenDensity()) - (portrait ?
+                0 : (PreferencesProvider.Interface.Dock.getShowHotseat(getContext()) ?
+                getResources().getDimensionPixelSize(R.dimen.button_bar_height) : 0) +
+                (PreferencesProvider.Interface.Homescreen.getShowSearchBar(getContext()) ?
+                getResources().getDimensionPixelSize(R.dimen.qsb_bar_height) : 0));
+        return width / mCountX;
+    }
+
+    private int getMaxCellHeight(boolean portrait) {
+        int buttonBarHeight = (PreferencesProvider.Interface.Dock.getShowHotseat(getContext()) ?
+                getResources().getDimensionPixelSize(R.dimen.button_bar_height) : 0) +
+                (PreferencesProvider.Interface.Homescreen.getShowSearchBar(getContext()) ?
+                getResources().getDimensionPixelSize(R.dimen.qsb_bar_height) : 0);
+        int height = (int) (getResources().getConfiguration().screenHeightDp * LauncherApplication.getScreenDensity())
+                - (portrait ? buttonBarHeight : 0);
+        return height / mCountY;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int widthSpecMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -931,11 +961,6 @@ public class CellLayout extends ViewGroup {
         int numWidthGaps = mCountX - 1;
         int numHeightGaps = mCountY - 1;
 
-        if (!LauncherApplication.isScreenLarge()){
-            mCellWidth = (widthSpecSize - mPaddingLeft - mPaddingRight) / mCountX;
-            mCellHeight = (heightSpecSize - mPaddingTop - mPaddingBottom) / mCountY;
-        }
-
         if (mOriginalWidthGap < 0 || mOriginalHeightGap < 0) {
             int hSpace = widthSpecSize - getPaddingLeft() - getPaddingRight();
             int vSpace = heightSpecSize - getPaddingTop() - getPaddingBottom();
@@ -943,12 +968,11 @@ public class CellLayout extends ViewGroup {
             int vFreeSpace = vSpace - (mCountY * mCellHeight);
             mWidthGap = Math.min(mMaxGap, numWidthGaps > 0 ? (hFreeSpace / numWidthGaps) : 0);
             mHeightGap = Math.min(mMaxGap,numHeightGaps > 0 ? (vFreeSpace / numHeightGaps) : 0);
+            mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
         } else {
             mWidthGap = mOriginalWidthGap;
             mHeightGap = mOriginalHeightGap;
         }
-
-        mShortcutsAndWidgets.setCellDimensions(mCellWidth, mCellHeight, mWidthGap, mHeightGap);
 
         // Initial values correspond to widthSpecMode == MeasureSpec.EXACTLY
         int newWidth = widthSpecSize;

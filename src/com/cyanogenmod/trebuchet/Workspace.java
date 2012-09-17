@@ -1,6 +1,5 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
- * Copytight (C) 2011 The CyanogenMod Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +30,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -44,12 +42,14 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -258,8 +258,6 @@ public class Workspace extends SmoothPagedView
     // Preferences
     private int mNumberHomescreens;
     private int mDefaultHomescreen;
-    private int mScreenPaddingVertical;
-    private int mScreenPaddingHorizontal;
     private boolean mShowSearchBar;
     private boolean mResizeAnyWidget;
     private boolean mHideIconLabels;
@@ -267,6 +265,12 @@ public class Workspace extends SmoothPagedView
     private boolean mShowScrollingIndicator;
     private boolean mFadeScrollingIndicator;
     private boolean mShowDockDivider;
+
+    private final GestureDetector mGestureDetector;
+    private Runnable mSwipeUpCallback = null;
+    private Runnable mSwipeDownCallback = null;
+    private Runnable mDoubleTapCallback = null;
+    private final Handler mHandler = new Handler();
 
     /**
      * Used to inflate the Workspace from XML.
@@ -298,16 +302,38 @@ public class Workspace extends SmoothPagedView
         mFadeInAdjacentScreens = false;
         mWallpaperManager = WallpaperManager.getInstance(context);
 
-        int cellCountX = context.getResources().getInteger(R.integer.cell_count_x);
-        int cellCountY = context.getResources().getInteger(R.integer.cell_count_y);
+        int cellWidth = res.getDimensionPixelSize(R.dimen.workspace_cell_width);
+        int cellHeight = res.getDimensionPixelSize(R.dimen.workspace_cell_height);
+        DisplayMetrics displayMetrics = res.getDisplayMetrics();
+        final float smallestScreenDim = res.getConfiguration().smallestScreenWidthDp *
+                displayMetrics.density;
+
+        int cellCountX = (int) (smallestScreenDim / cellWidth);
+        int cellCountY = (int) (smallestScreenDim / cellHeight);
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.Workspace, defStyle, 0);
 
         if (LauncherApplication.isScreenLarge()) {
-            int[] cellCount = getCellCountsForLarge(context);
-            cellCountX = cellCount[0];
-            cellCountY = cellCount[1];
+            // Determine number of rows/columns dynamically
+            // TODO: This code currently fails on tablets with an aspect ratio < 1.3.
+            // Around that ratio we should make cells the same size in portrait and
+            // landscape
+            TypedArray actionBarSizeTypedArray =
+                context.obtainStyledAttributes(new int[] { android.R.attr.actionBarSize });
+            final float actionBarHeight = actionBarSizeTypedArray.getDimension(0, 0f);
+            final float systemBarHeight = res.getDimension(R.dimen.status_bar_height);
+
+            cellCountX = 1;
+            while (CellLayout.widthInPortrait(res, cellCountX + 1) <= smallestScreenDim) {
+                cellCountX++;
+            }
+
+            cellCountY = 1;
+            while (actionBarHeight + CellLayout.heightInLandscape(res, cellCountY + 1)
+                <= smallestScreenDim - systemBarHeight) {
+                cellCountY++;
+            }
         }
 
         mSpringLoadedShrinkFactor =
@@ -321,13 +347,15 @@ public class Workspace extends SmoothPagedView
         cellCountY = a.getInt(R.styleable.Workspace_cellCountY, cellCountY);
         a.recycle();
 
-        setOnHierarchyChangeListener(this);
+        int countX = PreferencesProvider.Interface.Homescreen.getCellCountX(context, cellCountX);
+        int countY = PreferencesProvider.Interface.Homescreen.getCellCountY(context, cellCountY);
 
-        // if there is a value set it the preferences, use that instead
-        if ((!LauncherApplication.isScreenLarge()) || (getResources().getBoolean(R.bool.config_workspaceTabletGrid) == true)) {
-            cellCountX = PreferencesProvider.Interface.Homescreen.getCellCountX(context, cellCountX);
-            cellCountY = PreferencesProvider.Interface.Homescreen.getCellCountY(context, cellCountY);
+        if (countX > 0) {
+            cellCountX = countX;
+            cellCountY = countY;
         }
+
+        setOnHierarchyChangeListener(this);
 
         LauncherModel.updateWorkspaceLayoutCells(cellCountX, cellCountY);
         setHapticFeedbackEnabled(false);
@@ -339,8 +367,6 @@ public class Workspace extends SmoothPagedView
         if (mDefaultHomescreen >= mNumberHomescreens) {
             mDefaultHomescreen = mNumberHomescreens / 2;
         }
-        mScreenPaddingVertical = PreferencesProvider.Interface.Homescreen.getScreenPaddingVertical(context);
-        mScreenPaddingHorizontal = PreferencesProvider.Interface.Homescreen.getScreenPaddingHorizontal(context);
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar(context);
         mResizeAnyWidget = PreferencesProvider.Interface.Homescreen.getResizeAnyWidget(context);
         mHideIconLabels = PreferencesProvider.Interface.Homescreen.getHideIconLabels(context);
@@ -355,39 +381,40 @@ public class Workspace extends SmoothPagedView
         // Disable multitouch across the workspace/all apps/customize tray
         setMotionEventSplittingEnabled(true);
 
+        mGestureDetector = new GestureDetector(context,
+                new GestureDetector.SimpleOnGestureListener() {
+                    @Override
+                    public boolean onFling(MotionEvent e1, MotionEvent e2, float vX, float vY) {
+                        if (Math.abs(vY) > Math.abs(vX)) {
+                            if (vY < 0) {
+                                if (mSwipeUpCallback != null) {
+                                    mHandler.post(mSwipeUpCallback);
+                                    return true;
+                                }
+                            } else {
+                                if (mSwipeDownCallback != null) {
+                                    mHandler.post(mSwipeDownCallback);
+                                    return true;
+                                }
+                            }
+                        }
+                        return false;
+                    }
+                    @Override
+                    public boolean onDoubleTapEvent(MotionEvent e) {
+                        if (mDoubleTapCallback != null) {
+                            mHandler.removeCallbacks(mDoubleTapCallback);
+                            mHandler.postDelayed(mDoubleTapCallback, 100);
+                            return true;
+                        }
+                        return false;
+                    }
+        });
+
         // Unless otherwise specified this view is important for accessibility.
         if (getImportantForAccessibility() == View.IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
             setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_YES);
         }
-    }
-
-    public static int[] getCellCountsForLarge(Context context) {
-        int[] cellCount = new int[2];
-
-        final Resources res = context.getResources();
-        // Determine number of rows/columns dynamically
-        // TODO: This code currently fails on tablets with an aspect ratio < 1.3.
-        // Around that ratio we should make cells the same size in portrait and
-        // landscape
-        TypedArray actionBarSizeTypedArray =
-            context.obtainStyledAttributes(new int[] { android.R.attr.actionBarSize });
-        DisplayMetrics displayMetrics = res.getDisplayMetrics();
-        final float actionBarHeight = actionBarSizeTypedArray.getDimension(0, 0f);
-        final float systemBarHeight = res.getDimension(R.dimen.status_bar_height);
-        final float smallestScreenDim = res.getConfiguration().smallestScreenWidthDp *
-            displayMetrics.density;
-
-        cellCount[0] = 1;
-        while (CellLayout.widthInPortrait(res, cellCount[0] + 1) <= smallestScreenDim) {
-            cellCount[0]++;
-        }
-
-        cellCount[1] = 1;
-        while (actionBarHeight + CellLayout.heightInLandscape(res, cellCount[1] + 1)
-                <= smallestScreenDim - systemBarHeight) {
-            cellCount[1]++;
-        }
-        return cellCount;
     }
 
     // estimate the size of a widget with spans hSpan, vSpan. return MAX_VALUE for each
@@ -466,24 +493,12 @@ public class Workspace extends SmoothPagedView
                 (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         for (int i = 0; i < mNumberHomescreens; i++) {
             View screen = inflater.inflate(R.layout.workspace_screen, null);
-            screen.setPadding(screen.getPaddingLeft() + mScreenPaddingHorizontal,
-                    screen.getPaddingTop() + mScreenPaddingVertical,
-                    screen.getPaddingRight() + mScreenPaddingHorizontal,
-                    screen.getPaddingBottom() + mScreenPaddingVertical);
-            addView(screen);        }
-
+            addView(screen);
+        }
         try {
             mBackground = res.getDrawable(R.drawable.apps_customize_bg);
         } catch (Resources.NotFoundException e) {
             // In this case, we will skip drawing background protection
-        }
-
-        if (!mShowSearchBar) {
-            int paddingTop = 0;
-            if (mLauncher.getCurrentOrientation() == Configuration.ORIENTATION_PORTRAIT) {
-                paddingTop = (int)res.getDimension(R.dimen.qsb_bar_hidden_inset);
-            }
-            setPadding(0, paddingTop, getPaddingRight(), getPaddingBottom());
         }
 
         if (!mShowScrollingIndicator) {
@@ -729,8 +744,32 @@ public class Workspace extends SmoothPagedView
         return super.dispatchUnhandledMove(focused, direction);
     }
 
+    public void setOnSwipeUpCallback(Runnable callback) {
+        mSwipeUpCallback = callback;
+    }
+
+    public void setOnSwipeDownCallback(Runnable callback) {
+        mSwipeDownCallback = callback;
+    }
+
+    public void setOnDoubleTapCallback(Runnable callback) {
+        mDoubleTapCallback = callback;
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mSwipeUpCallback != null || mSwipeDownCallback != null || mDoubleTapCallback != null) {
+            boolean handled = mGestureDetector.onTouchEvent(ev);
+            switch (ev.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_OUTSIDE:
+                case MotionEvent.ACTION_CANCEL:
+                case MotionEvent.ACTION_UP:
+                    return handled;
+                case MotionEvent.ACTION_MOVE:
+                case MotionEvent.ACTION_DOWN:
+            }
+        }
+
         switch (ev.getAction() & MotionEvent.ACTION_MASK) {
         case MotionEvent.ACTION_DOWN:
             mXDown = ev.getX();
@@ -829,7 +868,7 @@ public class Workspace extends SmoothPagedView
 
         // Only show page outlines as we pan if we are on large screen
         if (LauncherApplication.isScreenLarge()) {
-            showOutlines();
+            //showOutlines();
             mIsStaticWallpaper = mWallpaperManager.getWallpaperInfo() == null;
         }
 
@@ -866,7 +905,7 @@ public class Workspace extends SmoothPagedView
         } else {
             // If we are not mid-dragging, hide the page outlines if we are on a large screen
             if (LauncherApplication.isScreenLarge()) {
-                hideOutlines();
+                //hideOutlines();
             }
 
             // Hide the scroll indicator as you pan the page
@@ -2477,7 +2516,7 @@ public class Workspace extends SmoothPagedView
         // Because we don't have space in the Phone UI (the CellLayouts run to the edge) we
         // don't need to show the outlines
         if (LauncherApplication.isScreenLarge()) {
-            showOutlines();
+            //showOutlines();
         }
     }
 
@@ -2544,7 +2583,7 @@ public class Workspace extends SmoothPagedView
         mSpringLoadedDragController.cancel();
 
         if (!mIsPageMoving) {
-            hideOutlines();
+            //hideOutlines();
         }
     }
 

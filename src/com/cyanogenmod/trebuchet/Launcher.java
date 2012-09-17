@@ -30,6 +30,8 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.app.SearchManager;
+import android.app.StatusBarManager;
+import android.app.UiModeManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
@@ -70,6 +72,7 @@ import android.text.SpannableStringBuilder;
 import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -89,8 +92,11 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -105,6 +111,7 @@ import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -128,11 +135,16 @@ public final class Launcher extends Activity
     static final boolean DEBUG_STRICT_MODE = false;
 
     private static final int MENU_GROUP_WALLPAPER = 1;
+    private static final int MENU_GROUP_MARKET = MENU_GROUP_WALLPAPER + 1;
+    private static final int MENU_GROUP_SETTINGS = MENU_GROUP_MARKET + 1;
+    private static final int MENU_GROUP_DRAWER = MENU_GROUP_SETTINGS + 1;
     private static final int MENU_WALLPAPER_SETTINGS = Menu.FIRST + 1;
     private static final int MENU_MANAGE_APPS = MENU_WALLPAPER_SETTINGS + 1;
-    private static final int MENU_PREFERENCES = MENU_MANAGE_APPS + 1;
+    private static final int MENU_MARKET = MENU_MANAGE_APPS + 1;
+    private static final int MENU_PREFERENCES = MENU_MARKET + 1;
     private static final int MENU_SYSTEM_SETTINGS = MENU_PREFERENCES + 1;
     private static final int MENU_HELP = MENU_SYSTEM_SETTINGS + 1;
+    private static final int MENU_DRAWER = MENU_HELP + 1;
 
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
@@ -145,7 +157,7 @@ public final class Launcher extends Activity
 
     static final String EXTRA_SHORTCUT_DUPLICATE = "duplicate";
 
-    static final int MAX_SCREEN_COUNT = 7;
+    static final int MAX_SCREEN_COUNT = 9;
     static final int DEFAULT_SCREEN = 2;
 
     private static final String PREFERENCES = "launcher.preferences";
@@ -297,6 +309,17 @@ public final class Launcher extends Activity
     private boolean mShowDockDivider;
     private boolean mHideIconLabels;
     private boolean mAutoRotate;
+    private boolean mShowWallpaper;
+    private boolean mShowHotseat;
+    private boolean mShowMarketButton;
+    private boolean mShowMenuButton;
+    private int mHomescreenDoubleTap;
+    private int mHomescreenSwipeUp;
+    private int mHomescreenSwipeDown;
+	private boolean mShowAppsButton;
+	private boolean mShowSearchDivider;
+
+    private StatusBarManager mStatusBarManager;
 
     private Runnable mBuildLayersRunnable = new Runnable() {
         public void run() {
@@ -350,9 +373,20 @@ public final class Launcher extends Activity
 
         // Preferences
         mShowSearchBar = PreferencesProvider.Interface.Homescreen.getShowSearchBar(this);
-        mShowDockDivider = PreferencesProvider.Interface.Homescreen.Indicator.getShowDockDivider(this);
+        mShowWallpaper = PreferencesProvider.Interface.Drawer.Background
+                .getBackgroundShowWallpaper(this);
+        mHomescreenDoubleTap = PreferencesProvider.Interface.Gestures.getHomescreenDoubleTap(this);
+        mHomescreenSwipeUp = PreferencesProvider.Interface.Gestures.getHomescreenSwipeUp(this);
+        mHomescreenSwipeDown = PreferencesProvider.Interface.Gestures.getHomescreenSwipeDown(this);
+        mShowHotseat = PreferencesProvider.Interface.Dock.getShowHotseat(this);
+        mShowMarketButton = PreferencesProvider.Interface.Drawer.getShowMarketButton(this);
+        mShowMenuButton = PreferencesProvider.Interface.Drawer.getShowMenuButton(this);
+        mShowDockDivider = PreferencesProvider.Interface.Homescreen.Indicator
+                .getShowDockDivider(this);
         mHideIconLabels = PreferencesProvider.Interface.Homescreen.getHideIconLabels(this);
-        mAutoRotate = PreferencesProvider.Interface.General.getAutoRotate(this, getResources().getBoolean(R.bool.allow_rotation));
+        mAutoRotate = PreferencesProvider.Interface.General.getAutoRotate(this, true);
+		mShowAppsButton = PreferencesProvider.Interface.Dock.getShowAppsButton(this);
+		mShowSearchDivider = PreferencesProvider.Interface.Homescreen.getShowSearchBackground(this);
 
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing(
@@ -912,22 +946,45 @@ public final class Launcher extends Activity
         mWorkspace.setOnLongClickListener(this);
         mWorkspace.setup(dragController);
         dragController.addDragListener(mWorkspace);
+        if (mHomescreenDoubleTap != 0) {
+            mWorkspace.setOnDoubleTapCallback(new Runnable() {
+                public void run() {
+                    performGesture(mHomescreenDoubleTap, 0);
+                }
+            });
+        }
+        if (mHomescreenSwipeUp != 0) {
+            mWorkspace.setOnSwipeUpCallback(new Runnable() {
+                public void run() {
+                    performGesture(mHomescreenSwipeUp, 1);
+                }
+            });
+        }
+        if (mHomescreenSwipeDown != 0) {
+            mWorkspace.setOnSwipeDownCallback(new Runnable() {
+                public void run() {
+                    performGesture(mHomescreenSwipeDown, 2);
+                }
+            });
+        }
 
         // Get the search/delete bar
         mSearchDropTargetBar = (SearchDropTargetBar) mDragLayer.findViewById(R.id.qsb_bar);
 
         // Hide the search divider if we are hiding search bar
-        if (!mShowSearchBar && getCurrentOrientation() == Configuration.ORIENTATION_LANDSCAPE) {
+        if ((!mShowSearchBar || !mShowSearchDivider)
+				&& getCurrentOrientation() == Configuration.ORIENTATION_LANDSCAPE) {
             ((View) findViewById(R.id.qsb_divider)).setVisibility(View.GONE);
         }
 
-        if (!mShowDockDivider) {
+        if (!mShowDockDivider || !mShowHotseat) {
             ((View) findViewById(R.id.dock_divider)).setVisibility(View.GONE);
         }
 
         // Setup AppsCustomize
         mAppsCustomizeTabHost = (AppsCustomizeTabHost)
                 findViewById(R.id.apps_customize_pane);
+        if (mShowWallpaper) mAppsCustomizeTabHost.setBackgroundColor(0x00000000);
         mAppsCustomizeContent = (AppsCustomizePagedView)
                 mAppsCustomizeTabHost.findViewById(R.id.apps_customize_pane_content);
         mAppsCustomizeTabHost.setup(this);
@@ -945,6 +1002,7 @@ public final class Launcher extends Activity
                     return false;
                 }
             });
+			if (!mShowAppsButton) mAllAppsButton.setVisibility(View.GONE);
         }
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         dragController.setDragScoller(mWorkspace);
@@ -953,6 +1011,24 @@ public final class Launcher extends Activity
         dragController.addDropTarget(mWorkspace);
         if (mSearchDropTargetBar != null) {
             mSearchDropTargetBar.setup(this, dragController);
+        }
+
+        if (LauncherApplication.isScreenLandscape(getApplicationContext())) {
+            mWorkspace.setPadding(mShowSearchBar ?
+                    getResources().getDimensionPixelSize(R.dimen.qsb_bar_height) : 0,
+                    0, mShowHotseat ? getResources().getDimensionPixelSize(
+                    R.dimen.button_bar_height) : 0, 0);
+        } else {
+            mWorkspace.setPadding(0, mShowSearchBar ?
+                    getResources().getDimensionPixelSize(R.dimen.qsb_bar_height) : 0,
+                    0, mShowHotseat ? getResources().getDimensionPixelSize(
+                    R.dimen.button_bar_height) : 0);
+            View indicator = findViewById(R.id.paged_view_indicator);
+            FrameLayout.LayoutParams dividerMargins = new FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+            dividerMargins.setMargins(0, 0, 0, 0);
+            dividerMargins.gravity = Gravity.BOTTOM;
+            if (!mShowDockDivider || !mShowHotseat) indicator.setLayoutParams(dividerMargins);
         }
     }
 
@@ -1376,12 +1452,16 @@ public final class Launcher extends Activity
 
             boolean alreadyOnHome = ((intent.getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
                         != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+            boolean drawerClosed = mState == State.WORKSPACE;
+            boolean openWithHome = PreferencesProvider.Interface.Drawer.getOpenWithHome(this);
+            boolean stayOnPage =
+                    PreferencesProvider.Interface.Drawer.getStayOnPage(this) && openWithHome;
 
             Folder openFolder = mWorkspace.getOpenFolder();
             // In all these cases, only animate if we're already on home
             mWorkspace.exitWidgetResizeMode();
             if (alreadyOnHome && mState == State.WORKSPACE && !mWorkspace.isTouchActive() &&
-                    openFolder == null) {
+                    openFolder == null && !stayOnPage) {
                 mWorkspace.moveToDefaultScreen(true);
             }
 
@@ -1397,8 +1477,12 @@ public final class Launcher extends Activity
             }
 
             // Reset AllApps to its initial state
-            if (!alreadyOnHome && mAppsCustomizeTabHost != null) {
+            if (!alreadyOnHome && mAppsCustomizeTabHost != null && !stayOnPage) {
                 mAppsCustomizeTabHost.reset();
+            }
+
+            if (alreadyOnHome && drawerClosed && openWithHome) {
+                onClickAllAppsButton(null);
             }
         }
     }
@@ -1544,6 +1628,10 @@ public final class Launcher extends Activity
         help.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                 | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 
+        menu.add(0, MENU_PREFERENCES, 0, R.string.menu_preferences)
+            .setIcon(android.R.drawable.ic_menu_preferences)
+            .setIntent(preferences)
+            .setAlphabeticShortcut('O');
         menu.add(MENU_GROUP_WALLPAPER, MENU_WALLPAPER_SETTINGS, 0, R.string.menu_wallpaper)
             .setIcon(android.R.drawable.ic_menu_gallery)
             .setAlphabeticShortcut('W');
@@ -1551,12 +1639,6 @@ public final class Launcher extends Activity
             .setIcon(android.R.drawable.ic_menu_manage)
             .setIntent(manageApps)
             .setAlphabeticShortcut('M');
-        if (!getResources().getBoolean(R.bool.config_cyanogenmod)) {
-            menu.add(0, MENU_PREFERENCES, 0, R.string.menu_preferences)
-                .setIcon(android.R.drawable.ic_menu_preferences)
-                .setIntent(preferences)
-                .setAlphabeticShortcut('O');
-        }
         menu.add(0, MENU_SYSTEM_SETTINGS, 0, R.string.menu_settings)
             .setIcon(android.R.drawable.ic_menu_preferences)
             .setIntent(settings)
@@ -1567,6 +1649,15 @@ public final class Launcher extends Activity
                 .setIntent(help)
                 .setAlphabeticShortcut('H');
         }
+        menu.add(MENU_GROUP_DRAWER, MENU_DRAWER, 0, R.string.menu_app_drawer)
+            .setIcon(android.R.drawable.ic_menu_preferences)
+            .setAlphabeticShortcut('D')
+            .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        onClickAllAppsButton(null);
+                        return true;
+                    }
+            });
         return true;
     }
 
@@ -1579,7 +1670,8 @@ public final class Launcher extends Activity
         }
         boolean allAppsVisible = (mAppsCustomizeTabHost.getVisibility() == View.VISIBLE);
         menu.setGroupVisible(MENU_GROUP_WALLPAPER, !allAppsVisible);
-
+        menu.setGroupVisible(MENU_GROUP_SETTINGS, !allAppsVisible);
+        menu.setGroupVisible(MENU_GROUP_DRAWER, !allAppsVisible && !mShowHotseat);
         return true;
     }
 
@@ -1821,6 +1913,10 @@ public final class Launcher extends Activity
 
             // Back button is a no-op here, but give at least some feedback for the button press
             mWorkspace.showOutlinesTemporarily();
+
+            if (PreferencesProvider.Interface.Drawer.getOpenWithBack(this)) {
+                onClickAllAppsButton(null);
+            }
         }
     }
 
@@ -1979,6 +2075,14 @@ public final class Launcher extends Activity
                     return true;
                 }
         });
+        popupMenu.show();
+    }
+
+    public void onClickOverflowMenuButton(View v) {
+        final PopupMenu popupMenu = new PopupMenu(this, v);
+        final Menu menu = popupMenu.getMenu();
+        onCreateOptionsMenu(menu);
+        onPrepareOptionsMenu(menu);
         popupMenu.show();
     }
 
@@ -2367,6 +2471,7 @@ public final class Launcher extends Activity
     }
 
     void updateWallpaperVisibility(boolean visible) {
+        if (mShowWallpaper) return;
         int wpflags = visible ? WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER : 0;
         int curflags = getWindow().getAttributes().flags
                 & WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
@@ -2506,7 +2611,10 @@ public final class Launcher extends Activity
 
                 @Override
                 public void onAnimationStart(Animator animation) {
-                    updateWallpaperVisibility(true);
+                    if (!mShowWallpaper) updateWallpaperVisibility(true);
+                    mWorkspace.setVisibility(View.GONE);
+                    hideHotseat(true);
+                    hideDockDivider();
                     // Prepare the position
                     toView.setTranslationX(0.0f);
                     toView.setTranslationY(0.0f);
@@ -2523,7 +2631,7 @@ public final class Launcher extends Activity
                         mWorkspace.hideScrollingIndicator(true);
                         hideDockDivider();
                     }
-                    if (!animationCancelled) {
+                    if (!animationCancelled && !mShowWallpaper) {
                         updateWallpaperVisibility(false);
                     }
 
@@ -2591,6 +2699,9 @@ public final class Launcher extends Activity
                 startAnimRunnable.run();
             }
         } else {
+            mWorkspace.setVisibility(View.GONE);
+            hideDockDivider();
+            hideHotseat(animated);
             toView.setTranslationX(0.0f);
             toView.setTranslationY(0.0f);
             toView.setScaleX(1.0f);
@@ -2612,7 +2723,7 @@ public final class Launcher extends Activity
             dispatchOnLauncherTransitionPrepare(toView, animated, false);
             dispatchOnLauncherTransitionStart(toView, animated, false);
             dispatchOnLauncherTransitionEnd(toView, animated, false);
-            updateWallpaperVisibility(false);
+            if (!mShowWallpaper) updateWallpaperVisibility(false);
         }
     }
 
@@ -2649,7 +2760,8 @@ public final class Launcher extends Activity
         }
 
         setPivotsForZoom(fromView, scaleFactor);
-        updateWallpaperVisibility(true);
+
+        if (!mShowWallpaper) updateWallpaperVisibility(true);
         showHotseat(animated);
         if (animated) {
             final LauncherViewPropertyAnimator scaleAnim =
@@ -2680,7 +2792,10 @@ public final class Launcher extends Activity
             mStateAnimation.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    updateWallpaperVisibility(true);
+                    if (!mShowWallpaper) updateWallpaperVisibility(true);
+                    mWorkspace.setVisibility(View.VISIBLE);
+                    showDockDivider(true);
+                    showHotseat(true);
                     fromView.setVisibility(View.GONE);
                     dispatchOnLauncherTransitionEnd(fromView, animated, true);
                     dispatchOnLauncherTransitionEnd(toView, animated, true);
@@ -2716,6 +2831,9 @@ public final class Launcher extends Activity
             dispatchOnLauncherTransitionStart(toView, animated, true);
             dispatchOnLauncherTransitionEnd(toView, animated, true);
             mWorkspace.hideScrollingIndicator(false);
+            mWorkspace.setVisibility(View.VISIBLE);
+            showDockDivider(true);
+            showHotseat(true);
         }
     }
 
@@ -2840,7 +2958,7 @@ public final class Launcher extends Activity
 
     void hideDockDivider() {
         if (mQsbDivider != null && mDockDivider != null) {
-            if (mShowSearchBar) {
+            if (mShowSearchDivider) {
                 mQsbDivider.setVisibility(View.INVISIBLE);
             }
             if (mShowDockDivider) {
@@ -2851,7 +2969,7 @@ public final class Launcher extends Activity
 
     void showDockDivider(boolean animated) {
         if (mQsbDivider != null && mDockDivider != null) {
-            if (mShowSearchBar) {
+            if (mShowSearchDivider) {
                 mQsbDivider.setVisibility(View.VISIBLE);
             }
             if (mShowDockDivider) {
@@ -2891,7 +3009,7 @@ public final class Launcher extends Activity
      * Shows the hotseat area.
      */
     void showHotseat(boolean animated) {
-        if (!LauncherApplication.isScreenLarge()) {
+        if (mHotseat != null) {
             if (animated) {
                 if (mHotseat.getAlpha() != 1f) {
                     int duration = mSearchDropTargetBar.getTransitionInDuration();
@@ -2907,7 +3025,7 @@ public final class Launcher extends Activity
      * Hides the hotseat area.
      */
     void hideHotseat(boolean animated) {
-        if (!LauncherApplication.isScreenLarge()) {
+        if (mHotseat != null) {
             if (animated) {
                 if (mHotseat.getAlpha() != 0f) {
                     int duration = mSearchDropTargetBar.getTransitionOutDuration();
@@ -3040,7 +3158,7 @@ public final class Launcher extends Activity
     private boolean updateGlobalSearchIcon() {
         final View searchButtonContainer = findViewById(R.id.search_button_container);
         final ImageView searchButton = (ImageView) findViewById(R.id.search_button);
-        final View searchDivider = findViewById(R.id.search_divider);
+        //final View searchDivider = findViewById(R.id.search_divider);
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
         final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
@@ -3059,14 +3177,14 @@ public final class Launcher extends Activity
                         TOOLBAR_ICON_METADATA_NAME);
             }
 
-            if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
+            //if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             if (searchButtonContainer != null) searchButtonContainer.setVisibility(View.VISIBLE);
             searchButton.setVisibility(View.VISIBLE);
             invalidatePressedFocusedStates(searchButtonContainer, searchButton);
             return true;
         } else {
             // We disable both search and voice search when there is no global search provider
-            if (searchDivider != null) searchDivider.setVisibility(View.GONE);
+            //if (searchDivider != null) searchDivider.setVisibility(View.GONE);
             if (searchButtonContainer != null) searchButtonContainer.setVisibility(View.GONE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             searchButton.setVisibility(View.GONE);
@@ -3086,7 +3204,7 @@ public final class Launcher extends Activity
     }
 
     private boolean updateVoiceSearchIcon(boolean searchVisible) {
-        final View searchDivider = findViewById(R.id.search_divider);
+        //final View searchDivider = findViewById(R.id.search_divider);
         final View voiceButtonContainer = findViewById(R.id.voice_button_container);
         final View voiceButton = findViewById(R.id.voice_button);
         final View voiceButtonProxy = findViewById(R.id.voice_button_proxy);
@@ -3120,7 +3238,7 @@ public final class Launcher extends Activity
                         R.id.voice_button, activityName, R.drawable.ic_home_voice_search_holo,
                         TOOLBAR_ICON_METADATA_NAME);
             }
-            if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
+            //if (searchDivider != null) searchDivider.setVisibility(View.VISIBLE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.VISIBLE);
             voiceButton.setVisibility(View.VISIBLE);
             if (voiceButtonProxy != null) {
@@ -3129,7 +3247,7 @@ public final class Launcher extends Activity
             invalidatePressedFocusedStates(voiceButtonContainer, voiceButton);
             return true;
         } else {
-            if (searchDivider != null) searchDivider.setVisibility(View.GONE);
+            //if (searchDivider != null) searchDivider.setVisibility(View.GONE);
             if (voiceButtonContainer != null) voiceButtonContainer.setVisibility(View.GONE);
             voiceButton.setVisibility(View.GONE);
             if (voiceButtonProxy != null) {
@@ -3155,12 +3273,20 @@ public final class Launcher extends Activity
         // Find the app market activity by resolving an intent.
         // (If multiple app markets are installed, it will return the ResolverActivity.)
         ComponentName activityName = intent.resolveActivity(getPackageManager());
-        if (activityName != null) {
+        if (activityName != null && mShowMarketButton) {
             int coi = getCurrentOrientationIndexForGlobalIcons();
             mAppMarketIntent = intent;
             sAppMarketIcon[coi] = updateTextButtonWithIconFromExternalActivity(
                     R.id.market_button, activityName, R.drawable.ic_launcher_market_holo,
                     TOOLBAR_ICON_METADATA_NAME);
+            if (!mShowMenuButton) {
+                FrameLayout.LayoutParams dividerMargins = new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.WRAP_CONTENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT);
+                dividerMargins.setMargins(0, 0, 0, 0);
+                dividerMargins.gravity = Gravity.RIGHT;
+                marketButton.setLayoutParams(dividerMargins);
+            }
             marketButton.setVisibility(View.VISIBLE);
         } else {
             // We should hide and disable the view so that we don't try and restore the visibility
@@ -3179,6 +3305,16 @@ public final class Launcher extends Activity
         marketIconDrawable.setBounds(0, 0, w, h);
 
         updateTextButtonWithDrawable(R.id.market_button, marketIconDrawable);
+    }
+
+    private void updateOverflowMenuButton() {
+        View overflowMenuButton = findViewById(R.id.overflow_menu_button);
+        if (!mShowMenuButton) {
+            overflowMenuButton.setVisibility(View.GONE);
+            overflowMenuButton.setEnabled(false);
+        } else {
+            overflowMenuButton.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -3245,7 +3381,7 @@ public final class Launcher extends Activity
         if (mWorkspace != null) {
             return mWorkspace.getCurrentPage();
         } else {
-            return DEFAULT_SCREEN;
+            return PreferencesProvider.Interface.Homescreen.getNumberHomescreens(getApplicationContext()) / 2;
         }
     }
 
@@ -3437,6 +3573,8 @@ public final class Launcher extends Activity
                 runNewAppsAnimation(willSnapPage);
             }
         }
+
+        updateOverflowMenuButton();
 
         mWorkspaceLoading = false;
     }
@@ -3663,7 +3801,7 @@ public final class Launcher extends Activity
         // disable clings when running in a test harness
         if(ActivityManager.isRunningInTestHarness()) return false;
 
-        return true;
+        return false;
     }
     private Cling initCling(int clingId, int[] positionData, boolean animate, int delay) {
         Cling cling = (Cling) findViewById(clingId);
@@ -3798,14 +3936,68 @@ public final class Launcher extends Activity
 
     public boolean preferencesChanged() {
         SharedPreferences prefs =
-            getSharedPreferences(PreferencesProvider.PREFERENCES_KEY, Context.MODE_PRIVATE);
-        boolean preferencesChanged = prefs.getBoolean(PreferencesProvider.PREFERENCES_CHANGED, false);
+                getSharedPreferences(PreferencesProvider.PREFERENCES_KEY, Context.MODE_PRIVATE);
+        boolean preferencesChanged =
+                prefs.getBoolean(PreferencesProvider.PREFERENCES_CHANGED, false);
         if (preferencesChanged) {
             SharedPreferences.Editor editor = prefs.edit();
                     editor.putBoolean(PreferencesProvider.PREFERENCES_CHANGED, false);
                     editor.commit();
         }
         return preferencesChanged;
+    }
+
+    public void performGesture(int action, int index) {
+        switch (action) {
+            case 0:
+                break;
+            case 1:
+                onClickAllAppsButton(null);
+                break;
+            case 2:
+                try {
+                    Object service  = getSystemService("statusbar");
+                    Class<?> statusbarManager = Class.forName("android.app.StatusBarManager");
+                    Method expand = statusbarManager.getMethod("expand");
+                    expand.invoke(service);
+                } catch (Exception e) {
+                }
+                break;
+            case 3:
+                Intent preferences = new Intent().setClass(this, Preferences.class);
+                preferences.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(preferences);
+                break;
+            case 4:
+                Intent rocketLauncher = new Intent().setClass(this, RocketLauncher.class);
+                rocketLauncher.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                        Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NO_HISTORY);
+                startActivity(rocketLauncher);
+                break;
+            case 5:
+                SharedPreferences prefs =
+                        getSharedPreferences(PreferencesProvider.PREFERENCES_KEY, Context.MODE_PRIVATE);
+                String shortcutUri = new String();
+                switch (index) {
+                    case 0:
+                        shortcutUri = prefs.getString("hdt_application", "");
+                        break;
+                    case 1:
+                        shortcutUri = prefs.getString("hsu_application", "");
+                        break;
+                    case 2:
+                        shortcutUri = prefs.getString("hsd_application", "");
+                        break;
+                }
+                try {
+                    Intent launchIntent = Intent.parseUri(shortcutUri, 0);
+                    launchIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(launchIntent);
+                } catch (Exception e) {
+                }
+                break;
+        }
     }
 
     /**

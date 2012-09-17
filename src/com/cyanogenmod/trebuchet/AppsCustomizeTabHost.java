@@ -162,8 +162,15 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
         View shopButton = findViewById(R.id.market_button);
         shopButton.setOnKeyListener(keyListener);
 
+        // Soft menu button
+        View overflowMenuButton = findViewById(R.id.overflow_menu_button);
+        overflowMenuButton.setOnKeyListener(keyListener);
+
         // Hide the tab bar until we measure
         mTabsContainer.setAlpha(0f);
+
+        boolean hideTopBar = PreferencesProvider.Interface.Drawer.TopBar.getHideTopbar(mContext);
+        if (hideTopBar) mTabsContainer.setVisibility(View.GONE);
     }
 
     @Override
@@ -212,9 +219,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
     }
 
     private void reloadCurrentPage() {
-        if (!LauncherApplication.isScreenLarge()) {
-            mAppsCustomizePane.flashScrollingIndicator(true);
-        }
+        mAppsCustomizePane.flashScrollingIndicator(true);
         mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
         mAppsCustomizePane.requestFocus();
     }
@@ -415,9 +420,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // transition to prevent slowing down the animation)
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage(), true);
 
-            if (!LauncherApplication.isScreenLarge()) {
-                mAppsCustomizePane.showScrollingIndicator(true);
-            }
+            mAppsCustomizePane.showScrollingIndicator(true);
         }
 
         if (mResetAfterTransition) {
@@ -457,7 +460,7 @@ public class AppsCustomizeTabHost extends TabHost implements LauncherTransitiona
             // prevent slowing down the animation)
             mAppsCustomizePane.loadAssociatedPages(mAppsCustomizePane.getCurrentPage());
 
-            if (!LauncherApplication.isScreenLarge() && mFadeScrollingIndicator) {
+            if (mFadeScrollingIndicator) {
                 mAppsCustomizePane.hideScrollingIndicator(false);
             }
         }
