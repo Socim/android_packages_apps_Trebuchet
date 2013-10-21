@@ -194,7 +194,6 @@
     the application creating the folder</string>
    <string name="preferences_interface_homescreen_icon_scale_summary">Scale of icons on the homescreen</string>
 
-
     <!-- Drawer -->
     <string name="preferences_interface_drawer_icon_scale_summary">Scale of icons in the app drawer</string>
     <string name="preferences_interface_drawer_show_wallpaper_title">Wallpaper background</string>
@@ -232,4 +231,9 @@
     <string name="dialog_indicator_color_title">Select color</string>
     <string name="current_input_method">Default</string>
     <string name="menu_app_drawer">App drawer</string>
+
+    <!-- Folder titles -->
+    <string name="conversations_title">Conversations</string>
+    <string name="google_title">Google</string>
+
 </resources>
