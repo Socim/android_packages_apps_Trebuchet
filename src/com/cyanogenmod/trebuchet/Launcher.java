@@ -344,6 +344,8 @@ public final class Launcher extends Activity
     private int mHomescreenSwipeUp;
     private int mHomescreenSwipeDown;
     private boolean mFadeOutDrawer;
+    private boolean mShowShading;
+
 
     private String mDrawerBackActivity = "";
 
@@ -439,6 +441,7 @@ public final class Launcher extends Activity
         } else {
             mDrawerShowWallpaper = true;
         }
+        mShowShading = PreferencesProvider.Interface.Homescreen.getShowShading();
 
         if (PROFILE_STARTUP) {
             android.os.Debug.startMethodTracing(
@@ -1779,6 +1782,7 @@ public final class Launcher extends Activity
                     mDrawerBackActivity = "";
                 }
                 if (mDrawerBackActivity.contains("trebuchet")) mDrawerBackActivity = "";
+            } else if (alreadyOnHome && drawerIntent) {
             } else {
                 mDrawerBackActivity = "";
             }
@@ -2386,6 +2390,37 @@ public final class Launcher extends Activity
 
     @Override
     public void onBackPressed() {
+        if (!mDrawerBackActivity.isEmpty()) {
+            try {
+                Intent launchIntent = new Intent();
+                launchIntent.setComponent(ComponentName.unflattenFromString(mDrawerBackActivity));
+                launchIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                mDrawerBackActivity = "";
+                int in = 0;
+                int out = 0;
+                switch (Settings.System.getInt(getContentResolver(),
+                        "drawer_transition", 0)) {
+                    case 1:
+                        in = com.android.internal.R.anim.slide_in_right;
+                        out = com.android.internal.R.anim.slide_out_left;
+                        break;
+                    case 2:
+                        in = com.android.internal.R.anim.slide_in_left;
+                        out = com.android.internal.R.anim.slide_out_right;
+                        break;
+                }
+                if (in != 0) {
+                    ActivityOptions opts = ActivityOptions.makeCustomAnimation(this,
+                            in, out);
+                    startActivity(launchIntent, opts.toBundle());
+                } else {
+                    startActivity(launchIntent);
+                }
+            } catch (Exception e) {
+            }
+            return;
+        }
+
         if (isAllAppsVisible()) {
             showWorkspace(true);
         } else if (mWorkspace.getOpenFolder() != null) {
@@ -2967,20 +3002,20 @@ public final class Launcher extends Activity
     }
 
     private void setWorkspaceBackground(boolean workspace) {
-        if (mDrawerShowWallpaper) return;
         if (mLauncherView != null) {
-            mLauncherView.setBackground(workspace ?
+            mLauncherView.setBackground(workspace && mShowShading ?
                     mWorkspaceBackgroundDrawable : null);
         }
     }
 
     void updateWallpaperVisibility(boolean visible) {
-        if (mDrawerShowWallpaper) return;
-        int wpflags = visible && mWallpaperVisible ? WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER : 0;
-        int curflags = getWindow().getAttributes().flags
-                & WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
-        if (wpflags != curflags) {
-            getWindow().setFlags(wpflags, WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
+        if (!mDrawerShowWallpaper) {
+            int wpflags = visible && mWallpaperVisible ? WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER : 0;
+            int curflags = getWindow().getAttributes().flags
+                    & WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
+            if (wpflags != curflags) {
+                getWindow().setFlags(wpflags, WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
+            }
         }
         setWorkspaceBackground(visible);
     }

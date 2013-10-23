@@ -83,6 +83,8 @@
     <string name="preferences_interface_homescreen_general_grid_columns_title">Columns</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Hide icon labels</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Hide homescreen icon labels</string>
+    <string name="preferences_interface_homescreen_general_shading_title">Background shading</string>
+    <string name="preferences_interface_homescreen_general_shading_summary">Show workspace background shading</string>
     <string name="preferences_interface_homescreen_scrolling_category">Scrolling</string>
     <string name="preferences_interface_homescreen_scrolling_transition_effect_title">Transition effect</string>
     <string name="preferences_interface_homescreen_scrolling_transition_effect_summary">Scrolling effect when scrolling homescreens</string>
@@ -190,8 +192,16 @@
     <string name="live_folder_cling_create_folder">Live folders allow app developers to create folders with dynamic content.
     Folder contents can be removed with a long press on a single entry. Unlike normal folders, items can only be added by
     the application creating the folder</string>
+
+<<<<<<< HEAD
+=======
+    <!-- Folder titles -->
+    <string name="conversations_title">Conversations</string>
+    <string name="google_title">Google</string>
+
    <string name="preferences_interface_homescreen_icon_scale_summary">Scale of icons on the homescreen</string>
 
+>>>>>>> 9a00e21468b9d02c719a5663f4b8a539567785e2
     <!-- Drawer -->
     <string name="preferences_interface_drawer_icon_scale_summary">Scale of icons in the app drawer</string>
     <string name="preferences_interface_drawer_show_wallpaper_title">Wallpaper background</string>
@@ -229,9 +239,4 @@
     <string name="dialog_indicator_color_title">Select color</string>
     <string name="current_input_method">Default</string>
     <string name="menu_app_drawer">App drawer</string>
-
-    <!-- Folder titles -->
-    <string name="conversations_title">Conversations</string>
-    <string name="google_title">Google</string>
-
 </resources>
