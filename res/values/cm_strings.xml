@@ -81,6 +81,8 @@
     <string name="preferences_interface_homescreen_general_grid_summary">Choose the number of rows/columns on the homescreen</string>
     <string name="preferences_interface_homescreen_general_grid_rows_title">Rows</string>
     <string name="preferences_interface_homescreen_general_grid_columns_title">Columns</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_title">Stretch screens</string>
+    <string name="preferences_interface_homescreen_general_stretch_screens_summary">Expand homescreens to fill the size of display</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_title">Hide icon labels</string>
     <string name="preferences_interface_homescreen_general_hide_icon_labels_summary">Hide homescreen icon labels</string>
     <string name="preferences_interface_homescreen_general_shading_title">Background shading</string>
@@ -195,9 +197,8 @@
 
     <!-- Folder titles -->
     <string name="conversations_title">Conversations</string>
-    <string name="google_title">Google</string>
-
-   <string name="preferences_interface_homescreen_icon_scale_summary">Scale of icons on the homescreen</string>
+    <string name="google_title" translatable="false">Google</string>
+    <string name="preferences_interface_homescreen_icon_scale_summary">Scale of icons on the homescreen</string>
 
     <!-- Drawer -->
     <string name="preferences_interface_drawer_icon_scale_summary">Scale of icons in the app drawer</string>
@@ -236,4 +237,5 @@
     <string name="dialog_indicator_color_title">Select color</string>
     <string name="current_input_method">Default</string>
     <string name="menu_app_drawer">App drawer</string>
+
 </resources>
