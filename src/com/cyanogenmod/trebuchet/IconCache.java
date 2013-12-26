@@ -40,7 +40,7 @@ public class IconCache {
     @SuppressWarnings("unused")
     private static final String TAG = "Trebuchet.IconCache";
 
-    private static final int INITIAL_ICON_CACHE_CAPACITY = 50;
+    private static final int INITIAL_ICON_CACHE_CAPACITY = 75;
     private IconPackHelper mIconPackHelper;
 
     private static class CacheEntry {
