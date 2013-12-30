@@ -27,7 +27,7 @@ public class PreloadReceiver extends BroadcastReceiver {
     private static final boolean LOGD = false;
 
     public static final String EXTRA_WORKSPACE_NAME =
-            "com.android.launcher.action.EXTRA_WORKSPACE_NAME";
+            "com.cyanogenmod.trebuchet.action.EXTRA_WORKSPACE_NAME";
 
     @Override
     public void onReceive(Context context, Intent intent) {

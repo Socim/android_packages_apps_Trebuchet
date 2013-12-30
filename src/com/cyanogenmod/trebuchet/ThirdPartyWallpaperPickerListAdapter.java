@@ -90,7 +90,7 @@ public class ThirdPartyWallpaperPickerListAdapter extends BaseAdapter implements
             // Exclude anything from our own package, and the old Launcher,
             // and live wallpaper picker
             if (itemPackageName.equals(context.getPackageName()) ||
-                    itemPackageName.equals("com.android.launcher") ||
+                    itemPackageName.equals("com.cyanogenmod.trebuchet") ||
                     itemPackageName.equals("com.android.wallpaper.livepicker")) {
                 continue;
             }

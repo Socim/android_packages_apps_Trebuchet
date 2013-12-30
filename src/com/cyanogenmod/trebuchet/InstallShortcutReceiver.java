@@ -44,7 +44,7 @@ import org.json.*;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
     public static final String ACTION_INSTALL_SHORTCUT =
-            "com.android.launcher.action.INSTALL_SHORTCUT";
+            "com.cyanogenmod.trebuchet.action.INSTALL_SHORTCUT";
     public static final String NEW_APPS_PAGE_KEY = "apps.new.page";
     public static final String NEW_APPS_LIST_KEY = "apps.new.list";
 
@@ -65,7 +65,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     private static final int INSTALL_SHORTCUT_NO_SPACE = -2;
 
     private static final String ACTION_INSTALL_SHORTCUT_SUCCESSFUL =
-            "com.android.launcher.action.INSTALL_SHORTCUT_SUCCESSFUL";
+            "com.cyanogenmod.trebuchet.action.INSTALL_SHORTCUT_SUCCESSFUL";
     private static final String EXTRA_RESPONSE_PACKAGENAME = "response_packagename";
     private static final String EXTRA_SHORTCUT_PACKAGENAME = "shortcut_packagename";
 
