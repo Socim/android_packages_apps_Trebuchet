@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2008 The Android Open Source Project
+# Copyright (C) 2013 The Android Open Source Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,19 +15,32 @@
 #
 
 LOCAL_PATH := $(call my-dir)
+
+#
+# Build app code.
+#
 include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS := optional
 
-LOCAL_STATIC_JAVA_LIBRARIES := android-common android-support-v13
-LOCAL_STATIC_JAVA_LIBRARIES += org.cyanogenmod.support
+LOCAL_STATIC_JAVA_LIBRARIES := android-support-v13
 
-LOCAL_SRC_FILES := $(call all-java-files-under, src) $(call all-renderscript-files-under, src)
+LOCAL_SRC_FILES := $(call all-java-files-under, src) \
+    $(call all-renderscript-files-under, src) \
+    $(call all-proto-files-under, protos)
+
+LOCAL_PROTOC_OPTIMIZE_TYPE := nano
+LOCAL_PROTOC_FLAGS := --proto_path=$(LOCAL_PATH)/protos/
+
+LOCAL_SDK_VERSION := 19
 
 LOCAL_PACKAGE_NAME := Trebuchet
-LOCAL_CERTIFICATE := shared
+LOCAL_PRIVILEGED_MODULE := true
+#LOCAL_CERTIFICATE := shared
 
-LOCAL_OVERRIDES_PACKAGES := Home
+LOCAL_AAPT_FLAGS := --rename-manifest-package com.cyanogenmod.trebuchet
+
+LOCAL_OVERRIDES_PACKAGES := Launcher3
 
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 

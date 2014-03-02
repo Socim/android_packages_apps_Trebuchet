@@ -14,45 +14,27 @@
      limitations under the License.
 -->
 
-<com.cyanogenmod.trebuchet.Folder
+<com.android.launcher3.Folder
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/portal_container_holo">
 
-    <com.cyanogenmod.trebuchet.CellLayout
-        android:id="@+id/folder_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/folder_padding"
-        android:paddingRight="@dimen/folder_padding"
-        android:paddingTop="@dimen/folder_padding"
-        android:paddingBottom="@dimen/folder_padding"
-        android:cacheColorHint="#ff333333"
-        android:hapticFeedbackEnabled="false"
-        launcher:widthGap="@dimen/folder_width_gap"
-        launcher:heightGap="@dimen/folder_height_gap"
-        launcher:cellWidth="@dimen/folder_cell_width"
-        launcher:cellHeight="@dimen/folder_cell_height" />
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+      <com.android.launcher3.CellLayout
+          android:id="@+id/folder_content"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:cacheColorHint="#ff333333"
+          android:hapticFeedbackEnabled="false" />
+    </ScrollView>
 
-    <TextView
-        android:id="@+id/empty_content"
-        android:text="@string/folder_empty_contents_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:paddingTop="@dimen/folder_name_padding"
-        android:paddingBottom="@dimen/folder_name_padding"
-        android:background="#00000000"
-        android:textSize="14sp"
-        android:textColor="#ffE63333"
-        android:textColorHighlight="#ff333333"
-        android:gravity="center_horizontal"
-        android:singleLine="true" />
-
-    <com.cyanogenmod.trebuchet.FolderEditText
+    <com.android.launcher3.FolderEditText
         android:id="@+id/folder_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,9 +44,11 @@
         android:background="#00000000"
         android:hint="@string/folder_hint_text"
         android:textSize="14sp"
-        android:textColor="#ffE63333"
-        android:textColorHighlight="#ff333333"
+        android:textColor="#ff777777"
+        android:textColorHighlight="#ffCCCCCC"
+        android:textCursorDrawable="@null"
         android:gravity="center_horizontal"
         android:singleLine="true"
-        android:imeOptions="flagNoExtractUi"/>
-</com.cyanogenmod.trebuchet.Folder>
+        android:imeOptions="flagNoExtractUi"
+        android:fontFamily="sans-serif-condensed"/>
+</com.android.launcher3.Folder>

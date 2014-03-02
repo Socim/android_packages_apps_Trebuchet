@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-     Copyright (C) 2013 The CyanogenMod Project
+     Copyright (C) 2014 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,17 +15,25 @@
      limitations under the License.
 -->
 <resources>
-    <string-array name="preferences_interface_homescreen_indicator_position_entries">
-        <item>Estándar</item>
-        <item>Arriba</item>
-        <item>Abajo</item>
+    <string-array name="preferences_interface_general_icons_text_font_family_entries">
+        <item>Normal</item>
+        <item>Fina</item>
+        <item>Comprimida</item>
     </string-array>
-    <string-array name="preferences_interface_drawer_indicator_position_entries">
-        <item>Arriba/Izquierda</item>
-        <item>Abajo/Derecha</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_orientation_entries">
-        <item>Horizontal</item>
-        <item>Vertical</item>
+    <string-array name="transition_effect_entries">
+        <item>Ninguno</item>
+        <item>Zoom entrante</item>
+        <item>Zoom saliente</item>
+        <item>Rotar arriba</item>
+        <item>Rotar abajo</item>
+        <item>Cúbico entrante</item>
+        <item>Cúbico saliente</item>
+        <item>Apilar</item>
+        <item>Acordeón</item>
+        <item>Voltear</item>
+        <item>Cilíndrico entrante</item>
+        <item>Cilíndrico saliente</item>
+        <item>Carrusel</item>
+        <item>Perspectiva</item>
     </string-array>
 </resources>

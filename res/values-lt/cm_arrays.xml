@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+<!--
+     Copyright (C) 2014 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,18 +14,26 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string-array name="preferences_interface_homescreen_indicator_position_entries">
-        <item>Virš skydelio</item>
-        <item>Viršuje</item>
-        <item>Apačioje</item>
+<resources>
+    <string-array name="preferences_interface_general_icons_text_font_family_entries">
+        <item>Įprastinis</item>
+        <item>Plonas</item>
+        <item>Suglaustas</item>
     </string-array>
-    <string-array name="preferences_interface_drawer_indicator_position_entries">
-        <item>Viršus/Kairė</item>
-        <item>Apačia/Dešinė</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_orientation_entries">
-        <item>Horizontaliai</item>
-        <item>Vertikaliai</item>
+    <string-array name="transition_effect_entries">
+        <item>Joks</item>
+        <item>Padidinti</item>
+        <item>Tolinti</item>
+        <item>Pasukti aukštyn</item>
+        <item>Pasukti žemyn</item>
+        <item>Kubo vidus</item>
+        <item>Kubo išorė</item>
+        <item>Krūva</item>
+        <item>Akordeonas</item>
+        <item>Apversti</item>
+        <item>Cilindro vidus</item>
+        <item>Cilindro išorė</item>
+        <item>Karuselė</item>
+        <item>Apžvalga</item>
     </string-array>
 </resources>

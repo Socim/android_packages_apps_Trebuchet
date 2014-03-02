@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+<!--
+     Copyright (C) 2014 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,18 +14,27 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string-array name="preferences_interface_homescreen_indicator_position_entries">
-        <item>Nad dokem</item>
-        <item>Nahoře</item>
-        <item>Dole</item>
+<resources>
+    <string-array name="preferences_interface_general_icons_text_font_family_entries">
+        <item>Obyčejné</item>
+        <item>Slabé</item>
+        <item>Zůžené</item>
     </string-array>
-    <string-array name="preferences_interface_drawer_indicator_position_entries">
-        <item>Nahoře/vlevo</item>
-        <item>Dole/vpravo</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_orientation_entries">
-        <item>Vodorovný</item>
-        <item>Svislý</item>
+
+    <string-array name="transition_effect_entries">
+        <item>Žádný</item>
+        <item>Přiblížení</item>
+        <item>Oddálení</item>
+        <item>Rotace nahoru</item>
+        <item>Rotace dolu</item>
+        <item>Uvnitř krychle</item>
+        <item>Vně krychle</item>
+        <item>Vrstvy</item>
+        <item>Harmonika</item>
+        <item>Překlopení</item>
+        <item>Uvnitř válce</item>
+        <item>Vně válce</item>
+        <item>Kolotoč</item>
+        <item>Přehled</item>
     </string-array>
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+<!--
+     Copyright (C) 2014 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,18 +14,27 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string-array name="preferences_interface_homescreen_indicator_position_entries">
-        <item>Над нижней панелью</item>
-        <item>Вверху экрана</item>
-        <item>Внизу экрана</item>
+<resources>
+    <string-array name="preferences_interface_general_icons_text_font_family_entries">
+        <item>Обычный</item>
+        <item>Облегчённый</item>
+        <item>Сжатый</item>
     </string-array>
-    <string-array name="preferences_interface_drawer_indicator_position_entries">
-        <item>Вверху или слева</item>
-        <item>Внизу или справа</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_orientation_entries">
-        <item>Горизонтальная</item>
-        <item>Вертикальная</item>
+
+    <string-array name="transition_effect_entries">
+        <item>Нет</item>
+        <item>Увеличение</item>
+        <item>Уменьшение</item>
+        <item>Поворот вверх</item>
+        <item>Поворот вниз</item>
+        <item>Внутри куба</item>
+        <item>Снаружи куба</item>
+        <item>Стопка</item>
+        <item>Сжатие</item>
+        <item>Переворот</item>
+        <item>Внутри цилиндра</item>
+        <item>Снаружи цилиндра</item>
+        <item>Карусель</item>
+        <item>Обзор</item>
     </string-array>
 </resources>

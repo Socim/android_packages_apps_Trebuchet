@@ -15,20 +15,20 @@
 -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
-    android:key="ui_general"
-    android:title="@string/preferences_interface_general_title">
-    <CheckBoxPreference android:key="ui_general_orientation"
-        android:defaultValue="@bool/allow_rotation"
-        android:title="@string/preferences_interface_general_orientation_title" />
-    <CheckBoxPreference android:key="ui_general_lock_workspace"
-        android:title="@string/preferences_interface_general_lock_workspace_title"
-        android:summary="@string/preferences_interface_general_lock_workspace_summary"
-        android:defaultValue="@bool/lock_workspace" />
-    <CheckBoxPreference android:key="ui_general_fullscreen"
-        android:title="@string/preferences_interface_general_fullscreen_title"
-        android:summary="@string/preferences_interface_general_fullscreen_summary" />
-    <Preference android:key="ui_general_iconpack"
-        android:title="@string/preferences_interface_general_iconpack_title"
-        android:summary="@string/preferences_interface_general_iconpack_summary" />
+        xmlns:launcher="http://schemas.android.com/apk/res/com.android.launcher3"
+        android:key="ui_general"
+        android:title="@string/preferences_interface_general_title">
+    <PreferenceCategory android:title="@string/preferences_interface_general_icons_category">
+        <CheckBoxPreference android:key="ui_general_icons_large"
+                android:title="@string/preferences_interface_general_icons_large_title"
+                android:summary="@string/preferences_interface_general_icons_large_summary"
+                android:defaultValue="@bool/preferences_interface_general_icons_large_default" />
+        <com.android.launcher3.settings.FontStylePreference android:key="ui_general_icons_text_font"
+                android:title="@string/preferences_interface_general_icons_text_style_title"
+                android:summary="@string/preferences_interface_general_icons_text_style_summary"
+                android:entries="@array/preferences_interface_general_icons_text_font_family_entries"
+                android:entryValues="@array/preferences_interface_general_icons_text_font_family_values"
+                android:defaultValue="@string/preferences_interface_general_icons_text_font_family_default" />
+    </PreferenceCategory>
+
 </PreferenceScreen>

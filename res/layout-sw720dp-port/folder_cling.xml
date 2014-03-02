@@ -13,14 +13,14 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.cyanogenmod.trebuchet.Cling
+<com.android.launcher3.Cling
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res/com.cyanogenmod.trebuchet"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3"
     launcher:drawIdentifier="folder_large">
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/cling_text_block_offset_x"
+        android:layout_marginStart="@dimen/cling_text_block_offset_x"
         android:layout_marginTop="@dimen/cling_text_block_offset_y">
         <LinearLayout
             android:layout_width="match_parent"
@@ -32,7 +32,7 @@
                 android:text="@string/folder_cling_title" />
             <TextView
                 style="@style/ClingText"
-                android:id="@+id/folder_cling_text"
+                android:id="@+id/folder_cling_create_folder"
                 android:layout_width="480dp"
                 android:layout_height="wrap_content"
                 android:text="@string/folder_cling_create_folder" />
@@ -43,4 +43,4 @@
                 android:onClick="dismissFolderCling" />
         </LinearLayout>
     </FrameLayout>
-</com.cyanogenmod.trebuchet.Cling>
+</com.android.launcher3.Cling>

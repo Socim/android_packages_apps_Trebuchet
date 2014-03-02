@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 The CyanogenMod Project
+<!--
+     Copyright (C) 2014 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,15 +14,31 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="menu_lock_workspace">נעל את מסך הבית</string>
-    <string name="preferences_interface_general_lock_workspace_title">נעל את מסך הבית</string>
-    <string name="menu_unlock_workspace">בטל את נעילת מסך הבית</string>
-    <string name="workspace_locked">מסך הבית נעול. בטל את הנעילה בהגדרות על מנת לסדר מחדש</string>
-    <string name="preferences_interface_general_orientation_title">סיבוב אוטומטי של המסך</string>
-    <string name="preferences_interface_general_lock_workspace_summary">נעל מיקום קיצורי דרך ותיקיות</string>
-    <string name="preferences_interface_general_fullscreen_title">מצב מסך מלא</string>
-    <string name="preferences_interface_general_fullscreen_summary">החבא את שורת המצב על מנת להגדיל את מסך הבית</string>
-    <string name="preferences_interface_homescreen_general_category">כללי</string>
-    <string name="preferences_interface_general_title">כללי</string>
+<resources>
+  <string name="sort_button_text">מיין</string>
+  <string name="filter_button_text">סינון</string>
+  <string name="default_screen_button_text">מסך ברירת מחדל</string>
+  <string name="transition_effect_button_text">אפקט גלילה</string>
+  <string name="sort_mode_title">כותרת</string>
+  <string name="sort_mode_launch_count">הפעל ספירה</string>
+  <string name="sort_mode_install_time">זמן התקנה</string>
+  <string name="scrolling_page_outlines">תיאור דף</string>
+  <string name="wallpaper_scroll">גלילת טפט</string>
+  <string name="preferences_title">העדפות</string>
+  <string name="preferences_application_title">יישום</string>
+  <string name="preferences_interface_homescreen_title">מסך הבית</string>
+  <string name="preferences_interface_homescreen_search_title">סרגל החיפוש</string>
+  <string name="preferences_interface_homescreen_search_summary">הצג את שורת החיפוש תמיד בחלק העליון של המסך</string>
+  <string name="preferences_interface_drawer_title">מגירה</string>
+  <string name="preferences_interface_dock_title">עגינה</string>
+  <string name="preferences_interface_general_title">כללי</string>
+  <string name="preferences_interface_general_icons_category">סמלים</string>
+  <string name="preferences_interface_general_icons_large_title">סמלים גדולים יותר</string>
+  <string name="preferences_interface_general_icons_large_summary">השתמש בצלמיות יישום גדול מאוד במסך הבית ובמגירה</string>
+  <string name="preferences_interface_general_icons_text_style_title">סגנון הגופן של הטקסט</string>
+  <string name="preferences_interface_general_icons_text_style_summary">סגנון ועיצוב הגופן עבור טקסט הסמלים</string>
+  <string name="dialog_pick_iconpack_title">בחר ערכת סמלים</string>
+  <string name="default_iconpack_title">סמלי ברירת מחדל</string>
+  <string name="icon_packs_title">אוסף סמלים</string>
+  <string name="no_iconpacks_summary">לא מותקנות ערכות סמל</string>
 </resources>

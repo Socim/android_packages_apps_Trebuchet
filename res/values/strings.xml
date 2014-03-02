@@ -21,16 +21,14 @@
     <!-- General -->
     <skip />
     <!-- Application name -->
-    <string name="application_name" translatable="false">Trebuchet</string>
+    <string name="application_name">Launcher3</string>
     <!-- Accessibility-facing application name -->
     <string name="home">Home</string>
     <!-- Name for all applications running as this uid. -->
     <string name="uid_name">Android Core Apps</string>
     <!-- Default folder name -->
     <string name="folder_name"></string>
-    <!-- Title of dialog that appears after user selects Wallpaper from menu -->
-    <string name="chooser_wallpaper">Choose wallpaper from</string>
-    <!-- Button label on Wallpaper Gallery screen; user selects this button to set a specific wallpaper -->
+    <!-- Button label on Wallpaper picker screen; user selects this button to set a specific wallpaper -->
     <string name="wallpaper_instructions">Set wallpaper</string>
     <!-- Shown when wallpapers are selected in Wallpaper picker -->
     <!-- String indicating how many media item(s) is(are) selected
@@ -58,6 +56,10 @@
     <string name="activity_not_found">App isn\'t installed.</string>
     <!--  Labels for the tabs in the customize drawer -->
     <string name="widgets_tab_label">Widgets</string>
+
+    <string name="widget_adder">Widgets</string>
+
+    <string name="toggle_weight_watcher">Show Mem</string>
 
     <!-- AppsCustomize pane -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
@@ -102,8 +104,6 @@ s -->
     <string name="group_shortcuts">Shortcuts</string>
     <!-- Options in "Add to Home" dialog box; Title of the group containing the list of all widgets/gadgets -->
     <string name="group_widgets">Widgets</string>
-    <!-- Options in "Add to Home" dialog box; Title of the group containing the list of apps that can set the wallpaper-->
-    <string name="group_wallpapers">Wallpapers</string>
     <!-- Error message when user has filled all their home screens -->
     <string name="completely_out_of_space">No more room on your Home screens.</string>
     <!-- Error message when user has filled a home screen -->
@@ -155,23 +155,6 @@ s -->
     <!-- Label for trash icon in All Apps, when an updated system app is selected. The update will
          be uninstalled. [CHAR_LIMIT=30] -->
     <string name="delete_zone_label_all_apps_system_app">Uninstall update</string>
-
-    <!-- Menus items: -->
-    <skip />
-    <!-- Verb, menu item used to add an item on the desktop -->
-    <string name="menu_add">Add</string>
-    <!-- Menu item used to manage installed applications -->
-    <string name="menu_manage_apps">Manage apps</string>
-    <!-- Noun, menu item used to set the desktop's wallpaper -->
-    <string name="menu_wallpaper">Wallpaper</string>
-    <!-- Verb, menu item used to initiate global search -->
-    <string name="menu_search">Search</string>
-    <!-- Noun, menu item used to bring down the notifications shade -->
-    <string name="menu_notifications">Notifications</string>
-    <!-- Noun, menu item used to show the system settings -->
-    <string name="menu_settings">System settings</string>
-    <!-- Noun, menu item used to show help. [CHAR_LIMIT=none] -->
-    <string name="menu_help">Help</string>
 
     <!-- URL pointing to help text. If empty, no link to help will be created [DO NOT TRANSLATE] -->
     <string name="help_url" translatable="false"></string>
@@ -247,23 +230,29 @@ s -->
     <string name="apps_customize_widgets_scroll_format">Widgets page %1$d of %2$d</string>
 
     <!-- Clings -->
-    <!-- The title text for the workspace cling [CHAR_LIMIT=none] -->
-    <string name="workspace_cling_title">Make yourself at home</string>
-    <!-- The description of how to use the workspace [CHAR_LIMIT=none] -->
-    <string name="workspace_cling_move_item">You can put your favorite apps here.</string>
-    <!-- The description of how to open all apps from the workspace [CHAR_LIMIT=none] -->
-    <string name="workspace_cling_open_all_apps">To see all your apps, touch the circle.</string>
-    <!-- The title text for the All Apps cling [CHAR_LIMIT=none] -->
+    <!-- The title text for the workspace cling [CHAR_LIMIT=60] -->
+    <string name="first_run_cling_title">Welcome!</string>
+    <!-- The description of how to use the workspace [CHAR_LIMIT=60] -->
+    <string name="first_run_cling_description">Make yourself at home.</string>
+    <!-- The description of how to use the workspace [CHAR_LIMIT=60] -->
+    <string name="first_run_cling_custom_content_hint"></string>
+    <!-- The description of how to use the workspace [CHAR_LIMIT=60] -->
+    <string name="first_run_cling_search_bar_hint"></string>
+    <!-- The description of how to use the workspace [CHAR_LIMIT=60] -->
+    <string name="first_run_cling_create_screens_hint">Create more screens for apps and folders</string>
+    <!-- The title text for the workspace cling [CHAR_LIMIT=60] -->
+    <string name="workspace_cling_title">Organize your space</string>
+    <!-- The description of how to use the workspace [CHAR_LIMIT=160] -->
+    <string name="workspace_cling_move_item">Touch &amp; hold background to manage wallpaper, widgets and settings.</string>
+    <!-- The title text for the All Apps cling [CHAR_LIMIT=60] -->
     <string name="all_apps_cling_title">Choose some apps</string>
-    <!-- The description of how to pick up and add an item to the workspace [CHAR_LIMIT=none] -->
+    <!-- The description of how to pick up and add an item to the workspace [CHAR_LIMIT=160] -->
     <string name="all_apps_cling_add_item">To add an app to your Home screen, touch &amp; hold it.</string>
-    <!-- The title text for the Folder cling [CHAR_LIMIT=none] -->
-    <string name="folder_cling_title">Organize your apps with folders</string>
-    <!-- The description of how to move an app [CHAR_LIMIT=none] -->
-    <string name="folder_cling_move_item">To move an app, touch &amp; hold it.</string>
-    <!-- The description of how to create a folder [CHAR_LIMIT=none] -->
-    <string name="folder_cling_create_folder">To make a new folder on your Home screen, stack one app on top of another.</string>
-    <!-- The text on the button to dismiss a cling [CHAR_LIMIT=none] -->
+    <!-- The title text for the Folder cling [CHAR_LIMIT=60] -->
+    <string name="folder_cling_title">Here\'s a folder</string>
+    <!-- The description of how to create a folder [CHAR_LIMIT=160] -->
+    <string name="folder_cling_create_folder">To create one like this, touch &amp; hold an app, then move it over another.</string>
+    <!-- The text on the button to dismiss a cling [CHAR_LIMIT=30] -->
     <string name="cling_dismiss">OK</string>
     <!-- Error message on dummy custom cling layout [DO NOT TRANSLATE] -->
     <string name="dummy_custom_cling_error_message">Error: custom workspace layout passed in but custom cling was not overwritten</string>
@@ -295,4 +284,14 @@ s -->
     <!-- Dummy string [CHAR_LIMIT=60] -->
     <string name="custom_workspace_cling_description_2"></string>
 
+    <!-- Debug-only activity name. [DO NOT TRANSLATE] -->
+    <string name="debug_memory_activity">* HPROF</string>
+
+    <!-- Strings for the customization mode -->
+    <!-- Text for widget add button -->
+    <string name="widget_button_text">Widgets</string>
+    <!-- Text for wallpaper change button -->
+    <string name="wallpaper_button_text">Wallpapers</string>
+    <!-- Text for settings button -->
+    <string name="settings_button_text">Settings</string>
 </resources>

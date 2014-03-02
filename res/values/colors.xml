@@ -21,8 +21,7 @@
     <!-- The color tints to apply to the text and drag view when hovering
          over the delete target or the info target -->
     <color name="delete_target_hover_tint">#DAFF0000</color>
-    <color name="info_target_hover_tint">#DA0099CC</color>
-    <color name="edit_target_hover_tint">#DACCCC00</color>
+    <color name="info_target_hover_tint">#DACD0000</color>
 
     <color name="bubble_dark_background">#20000000</color>
 
@@ -37,5 +36,5 @@
     <color name="folder_items_text_color">#FF333333</color>
     <color name="outline_color">#FFFFFFFF</color>
     
-    <color name="first_run_cling_circle_background_color">#E91414</color>
+    <color name="first_run_cling_circle_background_color">#EB6565</color>
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2012-2013 The CyanogenMod Project
+<!--
+     Copyright (C) 2014 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,121 +14,48 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string-array name="preferences_interface_homescreen_indicator_position_entries">
-        <item>Above Dock</item>
-        <item>Top</item>
-        <item>Bottom</item>
+<resources>
+    <string-array name="preferences_interface_general_icons_text_font_family_entries">
+        <item>Regular</item>
+        <item>Light</item>
+        <item>Condensed</item>
     </string-array>
-    <string-array name="preferences_interface_homescreen_indicator_position_values" translatable="false">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
+    <string-array name="preferences_interface_general_icons_text_font_family_values" translatable="false">
+        <item>sans-serif</item>
+        <item>sans-serif-light</item>
+        <item>sans-serif-condensed</item>
     </string-array>
-    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_entries" translatable="false">
-        <item>@string/effects_standard</item>
-        <item>@string/effects_tablet</item>
-        <item>@string/effects_zoom_in</item>
-        <item>@string/effects_zoom_out</item>
-        <item>@string/effects_rotate_up</item>
-        <item>@string/effects_rotate_down</item>
-        <item>@string/effects_cylinder_in</item>
-        <item>@string/effects_cylinder_out</item>
-        <item>@string/effects_cube_in</item>
-        <item>@string/effects_cube_out</item>
-        <item>@string/effects_spin</item>
-        <item>@string/effects_flip</item>
-        <item>@string/effects_stack</item>
-        <item>@string/effects_accordion</item>
-        <item>@string/effects_carousel_left</item>
-        <item>@string/effects_carousel_right</item>
-    </string-array>
-    <string-array name="preferences_interface_homescreen_scrolling_transition_effect_values" translatable="false">
-        <item>Standard</item>
-        <item>Tablet</item>
-        <item>ZoomIn</item>
-        <item>ZoomOut</item>
-        <item>RotateUp</item>
-        <item>RotateDown</item>
-        <item>CylinderIn</item>
-        <item>CylinderOut</item>
-        <item>CubeIn</item>
-        <item>CubeOut</item>
-        <item>Spin</item>
-        <item>Flip</item>
+
+    <string-array name="transition_effect_entries">
+        <item>None</item>
+        <item>Zoom In</item>
+        <item>Zoom Out</item>
+        <item>Rotate Up</item>
+        <item>Rotate Down</item>
+        <item>Cube In</item>
+        <item>Cube Out</item>
         <item>Stack</item>
         <item>Accordion</item>
-        <item>CarouselLeft</item>
-        <item>CarouselRight</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_scrolling_transition_effect_entries" translatable="false">
-        <item>@string/effects_standard</item>
-        <item>@string/effects_tablet</item>
-        <item>@string/effects_zoom_in</item>
-        <item>@string/effects_zoom_out</item>
-        <item>@string/effects_rotate_up</item>
-        <item>@string/effects_rotate_down</item>
-        <item>@string/effects_cylinder_in</item>
-        <item>@string/effects_cylinder_out</item>
-        <item>@string/effects_cube_in</item>
-        <item>@string/effects_cube_out</item>
-        <item>@string/effects_spin</item>
-        <item>@string/effects_flip</item>
-        <item>@string/effects_stack</item>
-        <item>@string/effects_accordion</item>
-        <item>@string/effects_carousel_left</item>
-        <item>@string/effects_carousel_right</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_scrolling_transition_effect_values" translatable="false">
-        <item>Standard</item>
-        <item>Tablet</item>
-        <item>ZoomIn</item>
-        <item>ZoomOut</item>
-        <item>RotateUp</item>
-        <item>RotateDown</item>
-        <item>CylinderIn</item>
-        <item>CylinderOut</item>
-        <item>CubeIn</item>
-        <item>CubeOut</item>
-        <item>Spin</item>
         <item>Flip</item>
-        <item>Stack</item>
-        <item>Accordion</item>
-        <item>CarouselLeft</item>
-        <item>CarouselRight</item>
+        <item>Cylinder In</item>
+        <item>Cylinder Out</item>
+        <item>Carousel</item>
+        <item>Overview</item>
     </string-array>
-    <string-array name="preferences_interface_drawer_indicator_position_entries">
-        <item>Top/Left</item>
-        <item>Bottom/Right</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_indicator_position_values" translatable="false">
-        <item>1</item>
-        <item>0</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_orientation_entries">
-        <item>Horizontal</item>
-        <item>Vertical</item>
-    </string-array>
-    <string-array name="preferences_interface_drawer_orientation_values" translatable="false">
-        <item>horizontal</item>
-        <item>vertical</item>
-    </string-array>
-    <string-array name="preferences_interface_gestures_homescreen_entries">
-        <item>@string/preferences_interface_gestures_no_action</item>
-        <item>@string/preferences_interface_gestures_open_drawer</item>
-        <item>@string/preferences_interface_gestures_expand_notifications</item>
-        <item>@string/preferences_interface_gestures_expand_quick_settings</item>
-        <item>@string/preferences_interface_gestures_preferences</item>
-        <item>@string/preferences_interface_gestures_settings</item>
-        <item>@string/preferences_interface_gestures_launch_application</item>
-    </string-array>
-    <string-array name="preferences_interface_gestures_homescreen_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
-        <item>5</item>
-        <item>6</item>
+    <string-array name="transition_effect_values" translatable="false">
+        <item>none</item>
+        <item>zoom-in</item>
+        <item>zoom-out</item>
+        <item>rotate-up</item>
+        <item>rotate-down</item>
+        <item>cube-in</item>
+        <item>cube-out</item>
+        <item>stack</item>
+        <item>accordion</item>
+        <item>flip</item>
+        <item>cylinder-in</item>
+        <item>cylinder-out</item>
+        <item>carousel</item>
+        <item>overview</item>
     </string-array>
 </resources>
